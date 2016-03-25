@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 
 //front = f
-//rear = b
+//rear = b 
 //right = r
 //left = l
 //stop = s
@@ -30,7 +30,7 @@ void setup() {
   pinMode(dir2PinB, OUTPUT);
   pinMode(speedPinB, OUTPUT);
 
-  speed1 = 200;
+  speed1 = 255;
 
   BT.begin(9600);
 
@@ -40,24 +40,29 @@ void setup() {
 void loop() {
   if (BT.available()) {
     inputWord = (BT.read());
-    if (inputWord == 'f') {
+    if (inputWord == 'r') {
       digitalWrite(dir1PinA, LOW);
       digitalWrite(dir2PinA, HIGH);
-      digitalWrite(dir1PinB, LOW);
-      digitalWrite(dir2PinB, HIGH);
-      BT.println("front!");
-    } else if (inputWord == 'b') {
+      BT.println("right!");
+    } else if (inputWord == 'l') {
       digitalWrite(dir1PinA, HIGH);
       digitalWrite(dir2PinA, LOW);
-      digitalWrite(dir1PinB, HIGH);
-      digitalWrite(dir2PinB, LOW);
-      BT.println("rear!");
+      BT.println("left!");
     } else if (inputWord == 's') {
       digitalWrite(dir1PinA, LOW);
       digitalWrite(dir2PinA, LOW);
       digitalWrite(dir1PinB, LOW);
       digitalWrite(dir2PinB, LOW);
       BT.println("stop!");
+    }
+    if (inputWord == 'b') {
+      digitalWrite(dir1PinB, HIGH);
+      digitalWrite(dir2PinB, LOW);
+      BT.println("rear!");
+    } else if (inputWord == 'f') {
+      digitalWrite(dir1PinB, LOW);
+      digitalWrite(dir2PinB, HIGH);
+      BT.println("front!");
     }
   }//end of BT.available()
 }//end of loop()
