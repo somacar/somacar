@@ -1,17 +1,20 @@
+#define trig 7
+#define echo 8
+
 void setup() {
   Serial.begin(9600);
-  pinMode(2, OUTPUT);
-  pinMode(3, INPUT);
+  pinMode(trig, OUTPUT);
+  pinMode(echo, INPUT);
 }
 
 void loop() {
   long duration, cm;
 
-  digitalWrite(2, HIGH);
+  digitalWrite(trig, HIGH);
   delayMicroseconds(10);
-  digitalWrite(2, LOW);
+  digitalWrite(trig, LOW);
 
-  duration = pulseIn(3, HIGH);
+  duration = pulseIn(echo, HIGH);
   cm = microsecondsToCentimeters(duration);
 
   Serial.print(cm);
