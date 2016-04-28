@@ -41,20 +41,25 @@ void setup() {
   BT.begin(9600);
   Serial.begin(9600);
   BT.println("Started bluetooth communication");
+  data = "";
+  ReceiveMode = false;
+  ReceiveComplete_AP = true;
 }
 
 void loop() {
+  
   if (Serial.available()) {
     r_funclist(Serial.read() - '0');
   }
   if(BT.available()) {
     BLEMessage = (BT.read());
-    Serial.println(BLEMessage);
+    //Serial.println(BLEMessage);
     
     if(BLEMessage == '%') {
       data = "";
       APData = "";
       ReceiveMode = false;
+      ReceiveComplete_AP = true;
       BT.println("init Completed");
     }
     
@@ -87,10 +92,8 @@ void loop() {
       PW.toCharArray(char_APPass, PW.length() + 1);
       BT.println("APName : " + AP);
       BT.println("AP Password : " + PW);
-      Serial.write("AP_");
-      Serial.write(char_APName);
-      Serial.write("PW_");
-      Serial.write(char_APPass); 
+      Serial.println("AP_SEND");
+      Serial.println(AP + "/" + PW);
       // send to Raspberry Pi
       
       APData = "";
@@ -115,4 +118,3 @@ void r_funclist(int number) {
 void setAP(char onechar) { 
   APData = APData + onechar;
 }
-
