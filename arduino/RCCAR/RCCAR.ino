@@ -15,6 +15,7 @@ int dir2PinB = 7;
 int speedPinA = 3;
 int speedPinB = 9;
 int speed1;
+int speed2;
 int dir;
 
 String inputString = "";
@@ -25,13 +26,13 @@ void setup() {
   pinMode(dir1PinA, OUTPUT);
   pinMode(dir2PinA, OUTPUT);
   pinMode(speedPinA, OUTPUT);
-
+ 
   pinMode(dir1PinB, OUTPUT);
   pinMode(dir2PinB, OUTPUT);
   pinMode(speedPinB, OUTPUT);
 
   speed1 = 255;
-
+  speed2 = 70;
   BT.begin(9600);
 
   BT.println("HI");
@@ -56,12 +57,16 @@ void loop() {
       BT.println("stop!");
     }
     if (inputWord == 'b') {
+      analogWrite(speedPinB,speed2);
       digitalWrite(dir1PinB, HIGH);
       digitalWrite(dir2PinB, LOW);
+       
       BT.println("rear!");
     } else if (inputWord == 'f') {
+      analogWrite(speedPinB,speed2); 
       digitalWrite(dir1PinB, LOW);
       digitalWrite(dir2PinB, HIGH);
+      
       BT.println("front!");
     }
   }//end of BT.available()
