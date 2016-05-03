@@ -42,10 +42,12 @@ void loop() {
   if (BT.available()) {
     inputWord = (BT.read());
     if (inputWord == 'r') {
+      analogWrite(speedPinA,speed1); 
       digitalWrite(dir1PinA, LOW);
       digitalWrite(dir2PinA, HIGH);
       BT.println("right!");
     } else if (inputWord == 'l') {
+      analogWrite(speedPinA,speed1); 
       digitalWrite(dir1PinA, HIGH);
       digitalWrite(dir2PinA, LOW);
       BT.println("left!");
