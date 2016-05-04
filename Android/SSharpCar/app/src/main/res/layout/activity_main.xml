@@ -37,35 +37,71 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <ListView
-            android:layout_width="151dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/messageListView" />
+            <ListView
+                android:layout_width="151dp"
+                android:layout_height="match_parent"
+                android:id="@+id/messageListView"
+                android:drawSelectorOnTop="false"
+                android:transcriptMode="normal"
+                android:stackFromBottom="true"/>
     </LinearLayout>
-
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:layout_gravity="left">
+        android:layout_height="match_parent">
 
-        <Button
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Left"
-            android:id="@+id/leftButton"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="center_vertical" />
+            android:paddingTop="20dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp">
 
-        <Button
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="조종모드"
+                android:layout_marginRight="10dp"
+                android:id="@+id/modeSwitch" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="비상정지"
+                android:background="#ff0000"
+                android:textColor="#ffffff"
+                android:id="@+id/stopButton" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Right"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/rightButton"
-            android:layout_gravity="center_vertical" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:layout_gravity="left">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Left"
+                android:id="@+id/leftButton"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center_vertical" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Right"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/rightButton"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+
     </LinearLayout>
+
+
 </LinearLayout>
