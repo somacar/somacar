@@ -34,4 +34,6 @@ while True:
     	print("[ROOT]network service restarting")
     	call("service networking restart",shell=True)
     	print("[ROOT]Restart Completed")
-    	ap_mode = False
+	p_sr.write(bytes("1", 'UTF-8'))
+	ap_mode = False
+	
