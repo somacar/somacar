@@ -1,9 +1,13 @@
-package soma.com.ssharpcar.activity;
+package soma.com.ssharpcar.remotecontroller.activity;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,7 +19,7 @@ import java.util.ArrayList;
 import soma.com.ssharpcar.R;
 
 public class MainActivity extends AppCompatActivity
-    implements View.OnClickListener {
+    implements View.OnClickListener, View.OnTouchListener {
 
     private BluetoothAdapter bluetoothAdapter;
     private ArrayList<String> messageDataList;
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
+        startActivity(new Intent(this, DeviceListActivity.class));
         //Massage 데이타 리스트 초기화
         messageDataList = new ArrayList<String>();
         messageDataList.add("시작합니다.");
@@ -52,13 +57,14 @@ public class MainActivity extends AppCompatActivity
         stopButton = (Button) findViewById(R.id.stopButton);
         stopButton.setOnClickListener(this);
         frontButton = (Button) findViewById(R.id.frontButton);
-        frontButton.setOnClickListener(this);
+        frontButton.setOnTouchListener(this);
         rearButton = (Button) findViewById(R.id.rearButton);
         rearButton.setOnClickListener(this);
         rightButton = (Button) findViewById(R.id.rightButton);
         rightButton.setOnClickListener(this);
         leftButton = (Button) findViewById(R.id.leftButton);
         leftButton.setOnClickListener(this);
+
     }
 
     @Override
@@ -73,6 +79,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
+
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.stopButton) {
@@ -82,23 +95,60 @@ public class MainActivity extends AppCompatActivity
         }
 
         String msg = "버튼 누름";
-        switch (view.getId()) {
-            case R.id.frontButton :
-                msg = "front";
-                break;
-            case R.id.rearButton :
-                msg = "rear";
-                break;
-            case R.id.rightButton :
-                msg = "right";
-                break;
-            case R.id.leftButton :
-                msg = "left";
-                break;
-        }
 
         messageDataList.add(msg);
         messageListAdapter.notifyDataSetChanged();
 
     }//end of onClick
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+        switch (view.getId()) {
+            case R.id.frontButton :
+                frontEvent(motionEvent);
+                break;
+            case R.id.rearButton :
+
+                break;
+            case R.id.rightButton :
+
+                break;
+            case R.id.leftButton :
+
+                break;
+        }
+
+
+        return true;
+    }// end of onTuch
+
+    private void frontEvent(MotionEvent motionEvent) {
+        if(MotionEvent.ACTION_DOWN == motionEvent.getAction()) {
+            messageDataList.add("Front 누름");
+            messageListAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
+            messageDataList.add("Front 정지");
+            messageListAdapter.notifyDataSetChanged();
+            return;
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 3 :
+                if(resultCode == Activity.RESULT_OK) {
+
+
+                } else {
+                    Toast.makeText(this, "블루투스를 켜주세요", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+        }
+    }
 }
