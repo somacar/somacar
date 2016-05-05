@@ -72,8 +72,8 @@ int main(int argc, char* argv[]) {
         vector<string> lexicon;
         size_t pos = 0;
         string delimiter = ",";
-        std::string token;
-        while ((pos = lex.find(delimiter)) != std::string::npos) {
+        string token;
+        while ((pos = lex.find(delimiter)) != string::npos) {
             token = lex.substr(0, pos);
             lexicon.push_back(token);
             lex.erase(0, pos + delimiter.length());
@@ -97,7 +97,7 @@ int main(int argc, char* argv[]) {
                                  loadOCRHMMClassifierCNN("OCRBeamSearch_CNN_model_data.xml.gz"),
                                  voc, transitionProbabilities, emissionProbabilities);
 
-    std::string output;
+    string output;
     double t_r = (double)getTickCount();
     ocrTes->run(mask, output);
     output.erase(remove(output.begin(), output.end(), '\n'), output.end());

@@ -4,6 +4,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 using namespace cv;
+using namespace std;
 
 String face_cas = "face.xml";
 String eye_cas = "eye.xml";
@@ -28,7 +29,7 @@ void FaceAndEyeDetect(Mat img) {
     Mat gray;
     cvtColor(img, gray, CV_BGR2GRAY);
 
-    std::vector<Rect> face_pos;
+    vector<Rect> face_pos;
     face.detectMultiScale(gray, face_pos, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(10, 10));
 
     for (int i = 0; i < face_pos.size(); i++) {
@@ -36,7 +37,7 @@ void FaceAndEyeDetect(Mat img) {
     }
 
     for (int i = 0; i < face_pos.size(); i++) {
-        std::vector<Rect> eye_pos;
+        vector<Rect> eye_pos;
         Mat roi = gray(face_pos[i]);
 
         eye.detectMultiScale(roi, eye_pos, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(10, 10));
