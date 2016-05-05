@@ -7,6 +7,7 @@
 #include <opencv2/imgproc.hpp>
 
 using namespace cv;
+using namespace std;
 
 #define RED Scalar(0, 0, 255)
 
@@ -15,8 +16,8 @@ int main(int argc, char *argv[]) {
     Mat img2 = imread("scene.JPG", CV_LOAD_IMAGE_GRAYSCALE);
     assert(img1.data && img2.data);
 
-    cv::Ptr<Feature2D> detector = xfeatures2d::SIFT::create(0, 3, 0.3);
-    std::vector<KeyPoint> key1, key2;
+    Ptr<Feature2D> detector = xfeatures2d::SIFT::create(0, 3, 0.3);
+    vector<KeyPoint> key1, key2;
 
     detector->detect(img1, key1);
     detector->detect(img2, key2);
@@ -26,13 +27,13 @@ int main(int argc, char *argv[]) {
     namedWindow("키포인트");
     imshow("키포인트", disp);
 
-    cv::Ptr<Feature2D> extractor = xfeatures2d::SIFT::create();
+    Ptr<Feature2D> extractor = xfeatures2d::SIFT::create();
     Mat des1, des2;
     extractor->compute(img1, key1, des1);
     extractor->compute(img2, key2, des2);
 
     FlannBasedMatcher matcher;
-    std::vector<DMatch> match;
+    vector<DMatch> match;
     matcher.match(des1, des2, match);
 
     double maxd = 0;
@@ -43,12 +44,12 @@ int main(int argc, char *argv[]) {
         if (dist > maxd) maxd = dist;
     }
 
-    std::vector<DMatch> good_match;
+    vector<DMatch> good_match;
     for (int i = 0; i < des1.rows; i++)
         if (match[i].distance <= max(2 * mind, 0.02)) good_match.push_back(match[i]);
 
     Mat img_match;
-    drawMatches(img1, key1, img2, key2, good_match, img_match, Scalar::all(-1), Scalar::all(-1), std::vector<char>(),
+    drawMatches(img1, key1, img2, key2, good_match, img_match, Scalar::all(-1), Scalar::all(-1), vector<char>(),
                 DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
 
     namedWindow("매칭 결과");
@@ -57,8 +58,8 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < (int) good_match.size(); i++)
         printf("키포인트 %d~%d\n", good_match[i].queryIdx, good_match[i].trainIdx);
 
-    std::vector<Point2f> model_pt;
-    std::vector<Point2f> scene_pt;
+    vector<Point2f> model_pt;
+    vector<Point2f> scene_pt;
     for (int i = 0; i < good_match.size(); i++) {
         model_pt.push_back(key1[good_match[i].queryIdx].pt);
         scene_pt.push_back(key2[good_match[i].trainIdx].pt);
@@ -66,13 +67,13 @@ int main(int argc, char *argv[]) {
 
     Mat H = findHomography(model_pt, scene_pt, CV_RANSAC);
 
-    std::vector<Point2f> model_corner(4);
+    vector<Point2f> model_corner(4);
     model_corner[0] = cvPoint(0, 0);
     model_corner[1] = cvPoint(img1.cols, 0);
     model_corner[2] = cvPoint(img1.cols, img1.rows);
     model_corner[3] = cvPoint(0, img1.rows);
 
-    std::vector<Point2f> scene_corner(4);
+    vector<Point2f> scene_corner(4);
     perspectiveTransform(model_corner, scene_corner, H);
 
     Point2f p(img1.cols, 0);
