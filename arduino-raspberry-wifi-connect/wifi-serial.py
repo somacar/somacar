@@ -34,5 +34,11 @@ while True:
     	print("[ROOT]network service restarting")
     	call("service networking restart",shell=True)
     	print("[ROOT]Restart Completed")
+<<<<<<< HEAD:arduino-raspberry-wifi-connect/wifi-serial.py
     	p_sr.write(bytes("1", 'UTF-8'))
     	ap_mode = False
+=======
+	p_sr.write(bytes("1", 'UTF-8'))
+	ap_mode = False
+	
+>>>>>>> origin/rainc:arduino-raspberry-wifi-configuration/wifi-serial.py
