@@ -8,7 +8,7 @@ import signal
 import socket
 REMOTE_SERVER = "www.google.com"
 ap_mode = False
-port_location = "/dev/ttyACM3"
+port_location = "/dev/ttyACM0"
 wpa_configure_file = "/etc/wpa.config"
 p_sr = serial.Serial(port_location,9600)
 p_sr.flushInput()
