@@ -40,8 +40,10 @@ void setup() {
 
   BT.begin(9600);
   Serial.begin(9600);
-  BT.println("Started bluetooth communication");
+  BT.println("[BT] Started bluetooth communication");
+  BT.println("[BT] Init completed");
   data = "";
+  APData = "";
   ReceiveMode = false;
   ReceiveComplete_AP = true;
 }
@@ -60,7 +62,7 @@ void loop() {
       APData = "";
       ReceiveMode = false;
       ReceiveComplete_AP = true;
-      BT.println("init Completed");
+      BT.println("[BT] Init completed");
     }
     
     if (ReceiveComplete_AP == false) {
@@ -109,9 +111,11 @@ void r_funclist(int number) {
       case 0:
         Serial.println("Received 0 from Raspi");
         break;
-      default:
-        Serial.println("The Number is : " + number);
+      case 1:
+        BT.println("[BT] Wi-Fi Connected");
         break;
+      case 2:
+        BT.println("[BT] Failed to Conenct");
    }
 }
 
