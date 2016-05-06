@@ -10,14 +10,20 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Set;
 
 import soma.com.ssharpcar.R;
 
-public class DeviceListActivity extends AppCompatActivity {
+public class DeviceListActivity extends AppCompatActivity
+    implements AdapterView.OnItemClickListener {
+
+    public static String EXTRA_DEVICE_ADDRESS = "device_address";
 
     private ArrayAdapter<String> pairedDeviceArrayAdapter;
     private ArrayAdapter<String> newDeviceArrayAdapter;
@@ -38,8 +44,10 @@ public class DeviceListActivity extends AppCompatActivity {
         newDeviceArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         paireDeviceListView = (ListView) findViewById(R.id.pairedDeviceList);
         paireDeviceListView.setAdapter(pairedDeviceArrayAdapter);
+        paireDeviceListView.setOnItemClickListener(this);
         newDeviceListView = (ListView) findViewById(R.id.newDeviceList);
         newDeviceListView.setAdapter(newDeviceArrayAdapter);
+        newDeviceListView.setOnItemClickListener(this);
 
         //새로운 디바이스 발견 브로드캐스트 리시버 등록
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -56,7 +64,7 @@ public class DeviceListActivity extends AppCompatActivity {
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
         if(pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
-                pairedDeviceArrayAdapter.add(device.getName() + "/n" + device.getAddress());
+                pairedDeviceArrayAdapter.add(device.getName() + "\n" + device.getAddress());
             }
         } else {
             pairedDeviceArrayAdapter.add("등록된 디바이스가 없습니다.");
@@ -87,7 +95,7 @@ public class DeviceListActivity extends AppCompatActivity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 //발견된 디바이스 이미 페어링된 디바이스면 어댑터 추가 생략
                 if(device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    newDeviceArrayAdapter.add(device.getName() + "/n" + device.getAddress());
+                    newDeviceArrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 }
 
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
@@ -112,4 +120,17 @@ public class DeviceListActivity extends AppCompatActivity {
         this.unregisterReceiver(mReceiver);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        String deviceInfo = ((TextView) view).getText().toString();
+        String deviceAddress = deviceInfo.split("\n")[1];
+
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_DEVICE_ADDRESS, deviceAddress);
+
+        setResult(Activity.RESULT_OK, intent);
+        Toast.makeText(this, deviceAddress, Toast.LENGTH_SHORT).show();
+
+        finish();
+    }
 }
