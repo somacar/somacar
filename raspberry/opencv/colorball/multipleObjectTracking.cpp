@@ -314,7 +314,6 @@ int main(int argc, char *argv[]) {
         }
         //show frames
         imshow(windowName2,threshold);
-
         imshow(windowName, cameraFeed);
         imshow(windowName1,HSV);
 
