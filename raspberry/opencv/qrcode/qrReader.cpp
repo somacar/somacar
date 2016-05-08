@@ -2,14 +2,14 @@
 
 qrReader::qrReader() {
     // Constructor
-    this->possibleCenters = std::vector<FinderPattern *>();
+    this->possibleCenters = vector<FinderPattern *>();
 }
 
 qrReader::~qrReader() {
     // Destructor
 }
 
-void qrReader::setImage(cv::Mat img) {
+void qrReader::setImage(Mat img) {
     this->img = img;
 }
 
