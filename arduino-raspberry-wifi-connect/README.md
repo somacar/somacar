@@ -18,9 +18,20 @@ Arduino Digital 포트 11번 핀 같은 경우 RXD 로 연결 해준다.
 ### 4. Python 데몬 실행
 >현재 Python 파일 실행 방식으로 되어 있기 때문에, screen 을 사용해서 데몬으로 작동 시킬 수 있도록 변경할 예정이다. 변경이 끝나는대로 Readme 에도 반영할 예정이다. Python 버젼은 3 버젼 이상을 권장하며, RPi2 에는 기본적으로 3.2 버젼이 설치되어 있다.
 ```
-sudo python3.2 wifi-serial.py
+sudo python3.2 wifi-serial.py &
 ```
 >관리자 권한이 반드시 필요하다 ㅠㅠ
+
+### 4.1 부팅 시 자동 시작
+>라즈베리파이 부팅 시 자동으로 파일이 실행되게 설정 하려면 vim 에디터로 /etc/rc.local 에 들어가서 명령어를 입력해주면 된다.
+```
+...
+... (생략)
+sudo python3.2 /home/pi/Desktop/somacar/arduino-raspberry-wifi-connect/wifi-serial.py &
+exit 0
+```
+> 저장하고 sudo reboot 로 재부팅을 해준 후 파이썬 파일이 정상적으로 실행되는지 확인해본다.
+
 
 ### 5. 안드로이드 휴대폰에서 블루투스 연결 (권장)
 >다른 휴대폰에서 블루투스 연결을 시도해 봤으나, 안드로이드가 제일 안정적으로 작동하는 편이기 때문에 테스트 시 안드로이드 환경에서 테스트 하는게 좋다.
