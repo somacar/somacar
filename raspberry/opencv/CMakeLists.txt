@@ -22,7 +22,7 @@ include_directories(${Tesseract_INCLUDE_DIR})
 #set(SOURCE_FILES cascade/cascade_FaceAndEye_Video.cpp)
 #add_executable(opencv ${SOURCE_FILES})
 
-add_executable(opencv project/target.cpp)
+add_executable(opencv project/main.cpp project/target.cpp)
 #add_executable( opencv qrcode/main.cpp qrcode/FinderPattern.cpp qrcode/FinderPatternTrio.cpp qrcode/qrReader.cpp)
 target_link_libraries(opencv ${OpenCV_LIBS} ${Tesseract_LIBS})
 #target_link_libraries(opencv ${OpenCV_LIBS})
