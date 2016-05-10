@@ -20,8 +20,6 @@
 using namespace cv;
 using namespace std;
 
-int DIRECTION;
-
 class Target {
 public:
     Target();
