@@ -35,7 +35,7 @@ void Target::found() {
     Point center = Point2f((int) (M.m10 / M.m00), (int) (M.m01 / M.m00));
     putText(this->draw, toString(center), center, FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
 
-    for(int i=0; i<4; i++) {
+    for (int i = 0; i < this->approx.size(); i++) {
         putText(this->draw, toString(this->approx[i]), this->approx[i], FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
     }
 
@@ -43,8 +43,8 @@ void Target::found() {
     else this->dir = RIGHT;
 }
 
-bool Target::is_square(vector<Point> c, Rect * rect) {
-    if (this->approx.size() < 4 || this->approx.size() > 6) return false; // rectangular
+bool Target::is_square(vector<Point> c, Rect *rect) {
+    if (this->approx.size() != 4) return false; // rectangular
     *rect = boundingRect(this->approx);
     if ((rect->width < MIN_RECT) || (rect->height < MIN_RECT)) return false; // min size 25px * 25px
     if ((rect->width / (float) rect->height < 0.8) || (rect->width / (float) rect->height > 1.2)) return false; // ratio
@@ -69,10 +69,6 @@ void Target::show() {
 //    imshow("Converted", this->cvt);
 }
 
-void align(vector<Point> *v) {
-
-}
-
 bool Target::find_square(UMat *sqr) {
     vector<vector<Point>> contours;
     Rect rect;
@@ -83,24 +79,17 @@ bool Target::find_square(UMat *sqr) {
         if (is_square(c, &rect)) {
             found();
             *sqr = this->orig(rect);
-//            cout << "contours " << c << endl;
-            cout << "approx " << this->approx << ", ";
-            align(&(this->approx));
+
             vector<Point2f> corn_pt, quad_pt;
-            for (int i=0; i<4; i++)
+            for (int i = 0; i < this->approx.size(); i++)
                 corn_pt.push_back(Point2f(this->approx[i].x, this->approx[i].y));
             quad_pt.push_back(Point2f(0, 0));
             quad_pt.push_back(Point2f(0, rect.height));
             quad_pt.push_back(Point2f(rect.width, rect.height));
             quad_pt.push_back(Point2f(rect.width, 0));
 
-            cout << "quad " << quad_pt << endl;
             UMat tr = getPerspectiveTransform(corn_pt, quad_pt).getUMat(ACCESS_READ);
-//            UMat tr = getPerspectiveTransform(this->approx, quad_pt).getUMat(ACCESS_READ);
             warpPerspective(this->orig.clone(), *sqr, tr, sqr->size());
-//            while(true) {
-//                if (waitKey()) break;
-//            }
             return true;
         }
     }
