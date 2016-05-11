@@ -27,7 +27,17 @@ void OCRTess::set(UMat f) {
     if (this->downsize)
         resize(f, f, Size(320, 240));
     this->img = f;
+}
 
+void OCRTess::loop() {
+    int i=0;
+    do {
+        detectAndRecog();
+        imshow("recognition with " + i, this->out);
+        transpose(this->img, this->img);
+        flip(this->img, this->img,1);
+        i++;
+    } while (i<4);
 }
 
 void OCRTess::detectAndRecog() {
@@ -147,16 +157,6 @@ void OCRTess::detectAndRecog() {
             putText(this->out, words[i][j], boxes[i][j].tl() - Point(1, 1), FONT_HERSHEY_SIMPLEX, scale_font, Scalar(255, 255, 255), (int) (3 * scale_font));
         }
     }
-    //cout << "TIME_OCR_ALT = " << ((double)getTickCount() - t_r)*1000/getTickFrequency() << endl;
-
-    char buff[100];
-//    sprintf(buff, "%2.1f Fps. @ %dx%d", (float) (1000 / t_all), out_img.cols, out_img.rows);
-    string fps_info = buff;
-//    rectangle(this->out, Point(this->out.rows - (160 / scale), this->out.rows - (70 / scale)), Point(this->out.cols, this->out.rows), Scalar(255, 255, 255), -1);
-//    putText(this->out, fps_info, Point(10, this->out.rows - (10 / scale)), FONT_HERSHEY_DUPLEX, scale_font, Scalar(255, 0, 0));
-//    putText(this->out, region_types_str[REGION_TYPE], Point(this->out.rows - (150 / scale), this->out.rows - (50 / scale)), FONT_HERSHEY_DUPLEX, scale_font, Scalar(255, 0, 0));
-//    putText(this->out, grouping_algorithms_str[GROUPING_ALGORITHM], Point(this->out.rows - (150 / scale), this->out.rows - (30 / scale)), FONT_HERSHEY_DUPLEX, scale_font, Scalar(255, 0, 0));
-//    putText(this->out, recognitions_str[RECOGNITION], Point(this->out.rows - (150 / scale), this->out.rows - (10 / scale)), FONT_HERSHEY_DUPLEX, scale_font, Scalar(255, 0, 0));
 }
 
 void OCRTess::show() {
