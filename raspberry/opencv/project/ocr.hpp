@@ -76,6 +76,8 @@ public:
 
     void set(UMat f);
 
+    void loop();
+
     void detectAndRecog();
 
     void show();
