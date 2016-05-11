@@ -137,8 +137,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
+        String ack_meassge = "";
+
         switch (view.getId()) {
             case R.id.frontButton :
+                ack_meassge = "font";
                 frontEvent(motionEvent);
                 break;
             case R.id.rearButton :
@@ -170,6 +173,18 @@ public class MainActivity extends AppCompatActivity
             controlService.write("frontUp" + "\n");
             return;
         }
+
+    }
+
+    private void rearEvent(MotionEvent motionEvent) {
+
+    }
+
+    private void rightEvent(MotionEvent motionEvent) {
+
+    }
+
+    private void leftEvnet(MotionEvent motionEvent) {
 
     }
 
