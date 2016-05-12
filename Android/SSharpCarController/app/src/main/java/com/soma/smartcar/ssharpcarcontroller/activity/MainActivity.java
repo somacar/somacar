@@ -137,21 +137,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
-        String ack_meassge = "";
-
         switch (view.getId()) {
             case R.id.frontButton :
-                ack_meassge = "font";
                 frontEvent(motionEvent);
                 break;
             case R.id.rearButton :
-
+                rearEvent(motionEvent);
                 break;
             case R.id.rightButton :
-
+                rightEvent(motionEvent);
                 break;
             case R.id.leftButton :
-
+                leftEvnet(motionEvent);
                 break;
         }
 
@@ -177,15 +174,51 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void rearEvent(MotionEvent motionEvent) {
+        if(MotionEvent.ACTION_DOWN == motionEvent.getAction()) {
+            messageDataList.add("Rear 누름");
+            messageListAdapter.notifyDataSetChanged();
+            controlService.write("rearDown" + "\n");
+            return;
+        }
 
+        if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
+            messageDataList.add("Rear 정지");
+            messageListAdapter.notifyDataSetChanged();
+            controlService.write("rearUp" + "\n");
+            return;
+        }
     }
 
     private void rightEvent(MotionEvent motionEvent) {
+        if(MotionEvent.ACTION_DOWN == motionEvent.getAction()) {
+            messageDataList.add("Right 누름");
+            messageListAdapter.notifyDataSetChanged();
+            controlService.write("rightDown" + "\n");
+            return;
+        }
 
+        if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
+            messageDataList.add("Right 정지");
+            messageListAdapter.notifyDataSetChanged();
+            controlService.write("rightUp" + "\n");
+            return;
+        }
     }
 
     private void leftEvnet(MotionEvent motionEvent) {
+        if(MotionEvent.ACTION_DOWN == motionEvent.getAction()) {
+            messageDataList.add("Left 누름");
+            messageListAdapter.notifyDataSetChanged();
+            controlService.write("leftDown" + "\n");
+            return;
+        }
 
+        if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
+            messageDataList.add("Left 정지");
+            messageListAdapter.notifyDataSetChanged();
+            controlService.write("leftUp" + "\n");
+            return;
+        }
     }
 
     @Override

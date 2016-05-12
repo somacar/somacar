@@ -96,6 +96,7 @@ public class DeviceListActivity extends AppCompatActivity
                 //발견된 디바이스 이미 페어링된 디바이스면 어댑터 추가 생략
                 if(device.getBondState() != BluetoothDevice.BOND_BONDED) {
                     newDeviceArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                    newDeviceArrayAdapter.notifyDataSetChanged();
                 }
 
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {

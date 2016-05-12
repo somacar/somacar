@@ -4,43 +4,29 @@
     api-level="23"
     density="560dpi"
     format="7"
-    timestamp="13908842195891"
-    verifier="CLASS_ADDED" >
+    timestamp="16442024298082" >
 
     <task
         name="javac"
-        duration="193" />
+        duration="188" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="58" />
+        duration="43" />
     <task
         name="verifier"
-        duration="9" />
+        duration="12" />
 
     <artifact
-        location="D:\Workspace\SoMarCar\Android\SSharpCarController\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_1\classes.dex"
-        type="DEX" />
-    <artifact
-        location="D:\Workspace\SoMarCar\Android\SSharpCarController\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_6\classes.dex"
-        type="DEX" />
+        location="D:\Workspace\SoMarCar\Android\SSharpCarController\app\build\outputs\apk\app-debug.apk"
+        type="MAIN" />
 
-    <build timestamp="13754704970859" >
+    <build timestamp="16442024298082" >
         <artifact
             location="D:\Workspace\SoMarCar\Android\SSharpCarController\app\build\outputs\apk\app-debug.apk"
             type="MAIN" />
-    </build>
-    <build
-        timestamp="13908842195891"
-        verifier="CLASS_ADDED" >
-        <artifact
-            location="D:\Workspace\SoMarCar\Android\SSharpCarController\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_1\classes.dex"
-            type="DEX" />
-        <artifact
-            location="D:\Workspace\SoMarCar\Android\SSharpCarController\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_6\classes.dex"
-            type="DEX" />
     </build>
 
 </instant-run>
