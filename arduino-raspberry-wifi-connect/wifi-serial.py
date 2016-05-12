@@ -68,29 +68,27 @@ while True:
 	    	try:
 	    	    	call("service networking stop",shell=True)
 	    	except Exception:
-	    	    	print("[ROOT] command error")
-			
+			print("[ROOT] command error")
 			count = 0
 			ip_set = False
 			gateway_ip = ""
 
 
-			try:
-				for line in runProcess("service networking restart")
-					 if line.find("DHCPDISCOVER"):
-					 	count = count + 1
+		try:
+			for line in runProcess("service networking restart")
+				if line.find("DHCPDISCOVER"):
+					count = count + 1
+					if count == 5:
+						print("[ROOT] Cannot connect to AP")
+						break
 
-					 if count == 5:
-					 	print("[ROOT] Cannot connect to AP")
-					 	break
+					if line.find("DHCPACK"):
+						split_string = line.split("from ")
+						gateway_ip = split_string[1]
+						ip_set = True
 
-					 if line.find("DHCPACK"):
-					 	split_string = line.split("from ")
-					 	gateway_ip = split_string[1]
-					 	ip_set = True
-
-			except:
-				print("[ROOT] Unexcepted error occured")
+		except:
+			print("[ROOT] Unexcepted error occured")
 
 
 	    	if (is_network_alive(gateway_ip)):
