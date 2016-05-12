@@ -1,0 +1,2 @@
+CHANGED,D:\Workspace\SoMarCar\Android\SSharpCarController\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\android\tools\fd\runtime\AppPatchesLoaderImpl.class
+CHANGED,D:\Workspace\SoMarCar\Android\SSharpCarController\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\soma\smartcar\ssharpcarcontroller\activity\MainActivity$override.class
