@@ -230,7 +230,7 @@ void trackFilteredObject(Object theObject, Mat threshold, Mat HSV, Mat &cameraFe
 
 int main(int argc, char *argv[]) {
     //if we would like to calibrate our filter values, set to true.
-    bool calibrationMode = true;
+    bool calibrationMode = false;
 
     //Matrix to store each frame of the webcam feed
     Mat cameraFeed;
@@ -313,10 +313,9 @@ int main(int argc, char *argv[]) {
 
         }
         //show frames
-        //imshow(windowName2,threshold);
-
+        imshow(windowName2,threshold);
         imshow(windowName, cameraFeed);
-        //imshow(windowName1,HSV);
+        imshow(windowName1,HSV);
 
         //delay 30ms so that screen can refresh.
         //image will not appear without this waitKey() command
