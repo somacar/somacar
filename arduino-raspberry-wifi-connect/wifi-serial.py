@@ -43,6 +43,7 @@ def runProcess(exe): #execute System command
 
 
 while True:
+<<<<<<< HEAD
     try:
 	    debug = str(p_sr.readline())
 	    test = debug.replace(r"\r\n" ,"")
@@ -105,3 +106,34 @@ while True:
         print('OS Error')
     except TypeError as e:
         print('Type Error')
+=======
+    debug = str(p_sr.readline())
+    test = debug.replace(r"\r\n" ,"")
+    test3 = test.replace("b'", "")
+    test4 = test3.replace("'" , "")
+    # must be APName/APPass    
+    
+
+    process = test4.split("/")
+
+    if process[0] == "AP_SEND":
+    	ap_mode = True
+
+    if (ap_mode == True and not(process[0] == "AP_SEND")):
+    	print("AP Set process..")
+    	print("---------------------------------")
+    	result = call(["wpa_passphrase", process[0], process[1]])
+    	print("[ROOT] Saving configure file")
+    	call("wpa_passphrase " + process[0] + " " + process[1] + "> " + wpa_configure_file ,shell=True)
+    	print("[ROOT]network service restarting")
+    	call("service networking restart",shell=True)
+    	print("[ROOT]Restart Completed")
+<<<<<<< HEAD:arduino-raspberry-wifi-connect/wifi-serial.py
+    	p_sr.write(bytes("1", 'UTF-8'))
+    	ap_mode = False
+=======
+	p_sr.write(bytes("1", 'UTF-8'))
+	ap_mode = False
+	
+>>>>>>> origin/rainc:arduino-raspberry-wifi-configuration/wifi-serial.py
+>>>>>>> origin/gunhee
