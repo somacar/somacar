@@ -5,6 +5,8 @@
 #ifndef OPENCV_QRREADER_H
 #define OPENCV_QRREADER_H
 
+using namespace cv;
+using namespace std;
 
 class qrReader {
 public:
