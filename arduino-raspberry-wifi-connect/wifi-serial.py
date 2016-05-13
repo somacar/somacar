@@ -43,7 +43,6 @@ def runProcess(exe): #execute System command
 
 
 while True:
-<<<<<<< HEAD
     try:
 	    debug = str(p_sr.readline())
 	    test = debug.replace(r"\r\n" ,"")
