@@ -71,29 +71,35 @@ while True:
 	    	print("[ROOT]network service restarting")
 	    	# signal.signal(signal.SIGALRM, signal_handler)
 	    	# signal.alarm(20)   # Ten seconds limit for Network restart
-	    	try:
-	    	    call("service networking stop",shell=True)
-	    	except Exception:
-	    		print("[ROOT] command error")
-
-
+	    	
+	    	
 	    	for line in runProcess("service networking restart"):
-	    		if line.find("DHCPDISCOVER"):
+	    		command_line = str(line)
+	    		if command_line.find("DHCPDISCOVER") ==0:
+	    			print('finded')
 	    			count = count + 1
-	    			if count == 3:
-	    				p_sr.write(bytes("3", 'UTF-8'))
-	    				print("[ROOT] Cannot connect to AP")
-	    				break
-	    			if line.find("DHCPACK"):
-	    				split_string = line.split("from ")
+	    			
+	    			if command_line.find("DHCPACK") == 0:
+	    				print('command_line',command_line)
+	    				split_string = command_line.split("from ")
 	    				gateway_ip = split_string[1]
 	    				ip_set = True
+	    				print("[ROOT] gateway_ip : ",gateway_ip)
+	    	
+	    	for line in runProcess('ifconfig wlan0'):
+	    		command_line = str(line)
+	    		if (command_line.find('cast:') == 36):
+	    			split1 = command_line.split(' ')
+	    			split2 = split1[11].split(':')
+	    			ipaddr = split2[1]
 
-	    	if (is_network_alive(gateway_ip)):
+
+	    	print('gw:',ipaddr)	
+	    		
+	    	if (is_network_alive(ipaddr)):
 	    		p_sr.write(bytes("1", 'UTF-8'))
 	    		print("[ROOT] Wi-Fi Connected")
-
-	    	if (gateway_ip == ""):
+	    	else:
 	    		p_sr.write(bytes("2", 'UTF-8'))
 	    		print("[ROOT] Failed to connect.")
 
@@ -101,7 +107,3 @@ while True:
 
     except serial.SerialException as e:
         print('OS Error')
-    except TypeError as e:
-        print('Type Error')
-
-   
