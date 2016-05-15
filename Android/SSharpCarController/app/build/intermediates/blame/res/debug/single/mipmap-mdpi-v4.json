@@ -1,5 +1,9 @@
 [
     {
+        "merged": "D:\\Workspace\\SomaCar\\Android\\SSharpCarController\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi-v4\\ic_launcher.png",
+        "source": "D:\\Workspace\\SomaCar\\Android\\SSharpCarController\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png"
+    },
+    {
         "merged": "D:\\Workspace\\SoMarCar\\Android\\SSharpCarController\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi-v4\\ic_launcher.png",
         "source": "D:\\Workspace\\SoMarCar\\Android\\SSharpCarController\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png"
     }
