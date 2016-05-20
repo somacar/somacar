@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render_to_response
 
-# Create your views here.
+from scar.models import *
+
+
+def map_view(request):
+    loc = Location.objects.all()
+    return render_to_response('map.html', {"loc": loc})
