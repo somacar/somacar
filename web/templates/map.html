@@ -1,5 +1,54 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block body %}
-    <div class="fullscreen_block"></div>
+    <div id="google-map" class="fullscreen_block"></div>
+    {#    <button id="map-zoom-in" class="btn btn-success btn-xs"><i class="fa fa-plus"></i></button>#}
+    {#    <button id="map-zoom-out" class="btn btn-success btn-xs"><i class="fa fa-minus"></i></button>#}
+{% endblock %}
+{% block script %}
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp" type="text/javascript"></script>
+    <script type="text/javascript">
+        var map;
+        function initialize() {
+            var mapDiv = document.getElementById('google-map');
+            map = new google.maps.Map(mapDiv, {
+                zoom: 9,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                map.setCenter(new google.maps.LatLng(37.5026761, 127.02604369999995));
+            }
+            google.maps.event.addListenerOnce(map, 'tilesloaded', addMarkers);
+        }
+        function showPosition(position) {
+            map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+        }
+        function addMarkers() {
+            {% for mark in loc %}
+                var point = new google.maps.LatLng({{ mark.pos.latitude }}, {{ mark.pos.longitude }});
+                {#            var image = '{{ STATIC_PREFIX }}' + 'checkmark.png';#}
+                var marker = new google.maps.Marker({
+                    position: point,
+                    map: map,
+                    {#                icon: image,#}
+                    title: 'title'
+                });
+                marker['info'] = new google.maps.InfoWindow({
+                    content: "<h1>mark</h1><br>{{ mark.get_time }}"
+                });
+                google.maps.event.addListener(marker, 'click', function () {
+                    this['info'].open(map, this);
+                });
+                google.maps.event.addListener(marker, 'mouseover', function () {
+                    this['info'].open(map, this);
+                });
+                google.maps.event.addListener(marker, 'mouseout', function () {
+                    this['info'].close(map, this);
+                });
+            {% endfor %}
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
 {% endblock %}
