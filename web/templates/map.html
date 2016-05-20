@@ -2,11 +2,9 @@
 {% load staticfiles %}
 {% block body %}
     <div id="google-map" class="fullscreen_block"></div>
-    {#    <button id="map-zoom-in" class="btn btn-success btn-xs"><i class="fa fa-plus"></i></button>#}
-    {#    <button id="map-zoom-out" class="btn btn-success btn-xs"><i class="fa fa-minus"></i></button>#}
 {% endblock %}
 {% block script %}
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp" type="text/javascript"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCqo-F2TnMAABZvfV5yTQLlWvUCJlJViU&amp;sensor=false"></script>
     <script type="text/javascript">
         var map;
         function initialize() {
