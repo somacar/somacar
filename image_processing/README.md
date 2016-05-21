@@ -48,7 +48,7 @@ $ git clone https://github.com/Itseez/opencv.git
 $ cd opencv
 $ git checkout 3.1.0
 $ cd ~
-$ c
+$ git clone https://github.com/itseez/opencv_contrib
 $ cd opencv_contrib
 $ git checkout 3.1.0
 $ cd ~/opencv
@@ -64,21 +64,19 @@ $ sudo make install
 ```
 
 ### 전체 구성
-| | | |
-| ------------- |:-------------:|:-------------:|
-|**project**|main|카메라를 통해서 영상을 읽는다|
-| |ocr|받아온 이미지에서 특정 단어를 읽는다|
-| |target|받아온 이미지에서 특정 직사각형을 찾는다|
-|**test**|OpenCV 다양한 예제들 ||
-|CMakeLists.txt|OpenCL과 Tesseract 연동||
-|FindTesseract.cmake|Tesseract 연동||
+| | |
+| ------------- |:-------------:|
+|**project**|카메라를 통해서 영상을 읽어서 특정 직사각형을 찾았을 경우에 텍스트 인식을 통해 물체를 추적|
+|**test**|OpenCV 다양한 예제들|
+|CMakeLists.txt|OpenCL과 Tesseract 연동|
+|FindTesseract.cmake|Tesseract 연동|
 
 ### 세부 설명
 - **project** > main.cpp
-특정 직사각형을 찾았을 때 tesseract-ocr 사용
-``` cpp
-if (target.find_square(&sqr)) ...
-```
+    - 특정 직사각형을 찾았을 때 tesseract-ocr 사용
+    ``` cpp
+    if (target.find_square(&sqr)) ...
+    ```
 - **project** > ocr.cpp
     - (이미지 축소 여부, 영역, 그룹)
     ``` cpp
@@ -103,12 +101,12 @@ if (target.find_square(&sqr)) ...
     ```
 - CMakeLists.txt
     - OpenCL
-    ```
+    ``` cmake
     set(OPENCV_OPENCL_RUNTIME)
     set(OPENCV_OPENCL_DEVICE :GPU:0)
     ```
     - Tesseract
-    ```
+    ``` cmake
     find_package(Tesseract)
     if (Tesseract_FOUND)
         set(HAVE_TESSERACT true)
