@@ -1,8 +1,8 @@
 # 사전 테스트
 
 ###LED Study
-회로 구성 사진<br>
-![Image](http://postfiles2.naver.net/20160311_1/rjsgmlgood_1457671440779K4NSO_JPEG/20160311_012721.jpg)
+회로 구성 사진
+![Imgur](http://i.imgur.com/eJcSjZN.jpg  "ㄴㅇㄹㅇ") 
 
 작동 확인 동영상 링크<br>
 
