@@ -17,6 +17,7 @@ SW 마에스트로 6기 2단계 프로젝트 by 최건희, 이영인, 김동규
 - [통신 제어](https://github.com/somacar/somacar/tree/master/communication_control)
 - [영상 처리](https://github.com/somacar/somacar/tree/master/image_processing)
 - [센서 제어](https://github.com/somacar/somacar/tree/master/sensor_control)
+- [사전 테스트](https://github.com/somacar/somacar/tree/master/pretest)
 
 ### 부품 내역
 |이름|설명|
