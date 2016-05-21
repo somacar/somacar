@@ -29,16 +29,12 @@ $ virtualenv --no-site-packages --distribute web
 - 개발 환경 구축
 ```
 $ source ~/work/pyenv/web/bin/activate
-(web) $ pip install -r requirements.txt
+(web) $ pip install -r requirements.txt     # permission error -> sudo chown -R $USER:$USER ~/work/pyenv
 (web) $ python manage.py makemigrations
 (web) $ python manage.py migrate
 (web) $ python manage.py createsuperuser
 Username : admin
 ...
-```
-pip에서 permission error가 날 경우
-```
-$ sudo chown -R $USER:$USER ~/work/pyenv
 ```
 - Nginx 설치
 ```

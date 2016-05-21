@@ -23,11 +23,17 @@ using namespace std;
 class Target {
 public:
     Target();
-    void init(UMat f, bool color=false);
+
+    void init(UMat f, bool color = false);
+
     bool find_square(UMat *sqr);
-    bool is_square(vector<Point> c, Rect * rect);
+
+    bool is_square(vector<Point> c, Rect *rect);
+
     void found();
+
     void show();
+
 private:
     UMat orig, cvt, draw;
     int dir;

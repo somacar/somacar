@@ -6,43 +6,42 @@
 - Tesseract (3.03)
 
 ###  Raspberry pi에 OpenCV 설치
-1. 업데이트
+- 업데이트
 ```
 $ sudo apt-get update
 $ sudo apt-get upgrade
 $ sudo rpi-update
 $ sudo reboot
 ```
-2. dependencies 설치
-    - 빌드 packages
-    ```
-    $ sudo apt-get install build-essential git cmake pkg-config
-    ```
-    - 이미지 IO packages
-    ```
-    $ sudo apt-get install libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
-    ```
-    - 영상 IO packages
-    ```
-    $ sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev
-    ```
-    - GTK
-    ```
-    $ sudo apt-get install libgtk2.0-dev
-    ```
-    - 기타 Operations
-    ```
-    $ sudo apt-get install libatlas-base-dev gfortran
-    ```
-    - 파이썬 연동
-    ```
-    $ sudo apt-get install python2.7-dev python3-dev
-    ```
-3. tesseract 설치
+- 빌드 packages
+```
+$ sudo apt-get install build-essential git cmake pkg-config
+```
+- 이미지 IO packages
+```
+$ sudo apt-get install libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
+```
+- 영상 IO packages
+```
+$ sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev
+```
+- GTK
+```
+$ sudo apt-get install libgtk2.0-dev
+```
+- 기타 Operations
+```
+$ sudo apt-get install libatlas-base-dev gfortran
+```
+- 파이썬 연동
+```
+$ sudo apt-get install python2.7-dev python3-dev
+```
+- tesseract 설치
 ```
 sudo apt-get install tesseract-ocr tesseract-ocr-dev libleptonica-dev
 ```
-4. OpenCV 다운로드 및 빌드
+- OpenCV 다운로드 및 빌드
 ```
 $ cd ~
 $ git clone https://github.com/Itseez/opencv.git
@@ -63,3 +62,63 @@ $ sudo cmake -D CMAKE_BUILD_TYPE=RELEASE \
 $ sudo make -j4
 $ sudo make install
 ```
+
+### 전체 구성
+| | | |
+| ------------- |:-------------:|:-------------:|
+|**project**|main|카메라를 통해서 영상을 읽는다|
+| |ocr|받아온 이미지에서 특정 단어를 읽는다|
+| |target|받아온 이미지에서 특정 직사각형을 찾는다|
+|**test**|OpenCV 다양한 예제들 ||
+|CMakeLists.txt|OpenCL과 Tesseract 연동||
+|FindTesseract.cmake|Tesseract 연동||
+
+### 세부 설명
+- **project** > main.cpp
+특정 직사각형을 찾았을 때 tesseract-ocr 사용
+``` cpp
+if (target.find_square(&sqr)) ...
+```
+- **project** > ocr.cpp
+    - (이미지 축소 여부, 영역, 그룹)
+    ``` cpp
+    OCRTess::OCRTess(bool downsize, int region, int group)
+    ```
+    - 흑백 처리를 통해 텍스트 인식
+    ``` cpp
+    void OCRTess::detectAndRecog()
+    ```
+- **project** > target.cpp
+    - (이미지, 색 구분 여부)
+    ``` cpp
+    void Target::init(UMat f, bool color)
+    ```
+    - 꼭지점이 4개 && 최소 25px * 25px && 
+    ``` cpp
+    bool Target::is_square(vector<Point> c, Rect *rect)
+    ```
+    - 조건을 모두 충족한 직사각형을 찾으면 투시 보정을 위해 기하학적 변환
+    ``` cpp
+    bool Target::find_square(UMat *sqr)
+    ```
+- CMakeLists.txt
+    - OpenCL
+    ```
+    set(OPENCV_OPENCL_RUNTIME)
+    set(OPENCV_OPENCL_DEVICE :GPU:0)
+    ```
+    - Tesseract
+    ```
+    find_package(Tesseract)
+    if (Tesseract_FOUND)
+        set(HAVE_TESSERACT true)
+        add_definitions(-DHAVE_TESSERACT=true)
+        message(WARNING "Tesseract:   YES")
+    else ()
+        message(WARNING "Tesseract:   NO")
+    endif ()
+    include_directories(${CMAKE_CURRENT_BINARY_DIR})
+    include_directories(${Tesseract_INCLUDE_DIR})
+    ... 
+    target_link_libraries(opencv ${OpenCV_LIBS} ${Tesseract_LIBS})
+    ```
