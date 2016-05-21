@@ -20,6 +20,7 @@ from scar.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', map_view),
-    url(r'^img$', img_view),
+    url(r'^$', map_view, name="map"),
+    url(r'^img$', img_view, name="img"),
+    url(r'^location/(?P<lat>\d+)/(?P<lon>\d+)$', loc_create),
 ]
