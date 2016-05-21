@@ -1,13 +1,22 @@
-# Software Maestro Project - Smart Kids Car
-
-## Introduction
-
-## Install
-
-## H/W 환경구성
-
-## 운영방안
-
-## Server
-
-## Car
+# 유아 스마트 전동차
+***
+### 프로젝트 소개
+SW 마에스트로 6기 2단계 프로젝트 by 최건희, 이영인, 김동규
+### 홈페이지
+### 개발 환경
+1. Pycharm
+2. Ubuntu
+### 부품 내역
+| 이름        | 설명           | 비고  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+1. 아두이노
+2. 라즈베리파이
+3. 초음파센서
+4. 블루투스
+5. Wifi
+### 소프트웨어
+### 영상처리
+### 소개
