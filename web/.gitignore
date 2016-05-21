@@ -1,0 +1,8 @@
+bin/
+include/
+lib/
+*/migrations/
+*/__pycache__/
+.idea/
+.Python
+db.sqlite3

@@ -15,17 +15,17 @@ OCRTess::OCRTess(bool downsize, int region, int group) {
 }
 
 void OCRTess::init(int num) {
-    //double t_r = getTickCount();
+//    double t_r = getTickCount();
     this->num = num;
     for (int o = 0; o < num; o++) {
         this->ocrs.push_back(OCRTesseract::create());
     }
-    //cout << "TIME_OCR_INITIALIZATION_ALT = "<< ((double)getTickCount() - t_r)*1000/getTickFrequency() << endl;
+//    cout << "TIME_OCR_INITIALIZATION_ALT = "<< ((double)getTickCount() - t_r)*1000/getTickFrequency() << endl;
 }
 
 void OCRTess::set(UMat f) {
     if (this->downsize)
-        resize(f, f, Size(320, 240));
+        resize(f, f, Size(240, 240));
     this->img = f;
 }
 
