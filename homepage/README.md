@@ -37,9 +37,11 @@ Username : admin
 ...
 ```
 - Nginx 설치
-``` vim
+```
 $ sudo yum -y install nginx
 $ sudo vi /etc/nginx/conf.d/default.conf
+```
+``` vim
 upstream app_server {
     server 127.0.0.1:8000 fail_timeout=0;
 }
@@ -67,6 +69,8 @@ server {
         proxy_pass http://app_server;
     }
 }
+```
+```
 $ sudo service nginx restart
 ```
 - 홈페이지 실행
