@@ -37,36 +37,36 @@ Username : admin
 ...
 ```
 - Nginx 설치
-```
+``` vim
 $ sudo yum -y install nginx
 $ sudo vi /etc/nginx/conf.d/default.conf
-    upstream app_server {
-        server 127.0.0.1:8000 fail_timeout=0;
+upstream app_server {
+    server 127.0.0.1:8000 fail_timeout=0;
+}
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+    root /usr/share/nginx/html;
+    index index.html index.htm;
+    client_max_body_size 4G;
+    server_name server.domain.com;
+    keepalive_timeout 5;
+    location /media  {
+        alias /path/to/project/resources/media;
     }
-    server {
-        listen 80 default_server;
-        listen [::]:80 default_server ipv6only=on;
-        root /usr/share/nginx/html;
-        index index.html index.htm;
-        client_max_body_size 4G;
-        server_name server.domain.com;
-        keepalive_timeout 5;
-        location /media  {
-            alias /path/to/project/resources/media;
-        }
-        location /static {
-            alias /path/to/project/resources/static;
-        }
-        location /static/admin {
-            alias /usr/local/lib/python3.5/dist-packages/django/contrib/admin/static/admin;
-        }
-        location / {
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header Host $http_host;
-            proxy_redirect off;
-            proxy_pass http://app_server;
-        }
+    location /static {
+        alias /path/to/project/resources/static;
     }
+    location /static/admin {
+        alias /usr/local/lib/python3.5/dist-packages/django/contrib/admin/static/admin;
+    }
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        proxy_pass http://app_server;
+    }
+}
 $ sudo service nginx restart
 ```
 - 홈페이지 실행
