@@ -3,10 +3,7 @@
 
 ### 개발 환경
 - Python (3.5.1)
-- Django
-```
-$ sudo pip install -r requirements.txt
-```
+- Django (1.9.6)
 
 ### 실행 방법
 - 가상 환경 구축
