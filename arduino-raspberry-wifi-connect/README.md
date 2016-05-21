@@ -20,7 +20,7 @@ Arduino Digital 포트 11번 핀 같은 경우 RXD 로 연결 해준다.
 ```
 sudo python3.2 wifi-serial.py &
 ```
->관리` 권한이 반드시 필요하다 ㅠㅠ
+>root 권한 필요
 
 ### 4.1 부팅 시 자동 시작
 >라즈베리파이 부팅 시 자동으로 파일이 실행되게 설정 하려면 vim 에디터로 /etc/rc.local 에 들어가서 명령어를 입력해주면 된다.
