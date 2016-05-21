@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(opencv)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(OPENCV_OPENCL_RUNTIME)
 set(OPENCV_OPENCL_DEVICE :GPU:0)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(OpenCV REQUIRED)
