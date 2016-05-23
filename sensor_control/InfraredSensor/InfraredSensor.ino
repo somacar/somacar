@@ -1,12 +1,24 @@
-int v_analogPin = A0;
-int v_analogValue = 0;
+int ledPin = 13;
+int sensor = A0;   
+int val = 0;
 
-void setup() {
+void setup()
+{
+  pinMode(sensor, INPUT);
+  pinMode(ledPin, OUTPUT);
   Serial.begin(9600);
 }
 
-void loop() {
-  v_analogValue = analogRead(v_analogPin);
-  Serial.println(v_analogValue);
-  delay(200);
+void loop()
+{
+  val = analogRead(A0);   // read the input pin
+  Serial.println(val);
+  delay(100);
+  
+  if (val > 680) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+  
 }
