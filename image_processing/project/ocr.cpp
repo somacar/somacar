@@ -24,20 +24,23 @@ void OCRTess::init(int num) {
 }
 
 void OCRTess::set(UMat f) {
-    if (this->downsize)
-        resize(f, f, Size(240, 240));
+//    if (this->downsize) resize(f, f, Size(240, 240));
+    if (f.cols < f.rows) {
+        transpose(this->img, this->img);
+        flip(this->img, this->img, 1);
+    }
     this->img = f;
 }
 
 void OCRTess::loop() {
-    int i=0;
+    int i = 0;
     do {
         detectAndRecog();
         imshow("recognition with " + i, this->out);
         transpose(this->img, this->img);
-        flip(this->img, this->img,1);
+        flip(this->img, this->img, 2);
         i++;
-    } while (i<4);
+    } while (i < 2);
 }
 
 void OCRTess::detectAndRecog() {

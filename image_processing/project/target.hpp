@@ -12,6 +12,9 @@
 #define LEFT 0
 #define RIGHT 1
 
+#define ORIG_WIDTH 5
+#define ORIG_DIS 30
+
 #define DRAW Scalar(0, 0, 255)
 #define DRAW_THICK 1
 #define LOWCOLOR Scalar(0, 200, 0)

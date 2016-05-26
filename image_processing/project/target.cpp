@@ -47,7 +47,7 @@ bool Target::is_square(vector<Point> c, Rect *rect) {
     if (this->approx.size() != 4) return false; // rectangular
     *rect = boundingRect(this->approx);
     if ((rect->width < MIN_RECT) || (rect->height < MIN_RECT)) return false; // min size 25px * 25px
-    if ((rect->width / (float) rect->height < 0.8) || (rect->width / (float) rect->height > 1.2)) return false; // ratio
+//    if ((rect->width / (float) rect->height < 0.8) || (rect->width / (float) rect->height > 1.2)) return false; // ratio
     vector<Point> hull;
     convexHull(c, hull);
     return ((contourArea(c) / (float) contourArea(hull)) > 0.9);
