@@ -12,8 +12,9 @@
 #define LEFT 0
 #define RIGHT 1
 
-#define ORIG_WIDTH 5
-#define ORIG_DIS 30
+#define ORIG_WIDTH 25
+#define ORIG_DIS 73
+#define ORIG_P 1043
 
 #define DRAW Scalar(0, 0, 255)
 #define DRAW_THICK 1
@@ -39,7 +40,7 @@ public:
 
 private:
     UMat orig, cvt, draw;
-    int dir;
+    int dir, dist;
     vector<Point> approx;
 };
 

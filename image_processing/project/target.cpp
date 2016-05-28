@@ -47,6 +47,7 @@ bool Target::is_square(vector<Point> c, Rect *rect) {
     if (this->approx.size() != 4) return false; // rectangular
     *rect = boundingRect(this->approx);
     if ((rect->width < MIN_RECT) || (rect->height < MIN_RECT)) return false; // min size 25px * 25px
+    this->dist = ORIG_WIDTH * ORIG_P / rect->width;
 //    if ((rect->width / (float) rect->height < 0.8) || (rect->width / (float) rect->height > 1.2)) return false; // ratio
     vector<Point> hull;
     convexHull(c, hull);
@@ -65,8 +66,8 @@ void Target::show() {
             break;
     }
     putText(this->draw, status, Point(20, 30), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
+    putText(this->draw, to_string(this->dist) + " cm", Point(20, 100), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
     imshow("Original", this->draw);
-//    imshow("Converted", this->cvt);
 }
 
 bool Target::find_square(UMat *sqr) {
