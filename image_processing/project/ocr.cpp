@@ -7,6 +7,7 @@ OCRTess::OCRTess(bool downsize, int region, int group) {
     this->GROUP = group;
 
     for (int i = 0; i < 2; i++) {
+        cout << "before er_filter" << endl;
         Ptr<ERFilter> er_filter1 = createERFilterNM1(loadClassifierNM1("trained_classifierNM1.xml"), 8, 0.00015f, 0.13f, 0.2f, true, 0.1f);
         Ptr<ERFilter> er_filter2 = createERFilterNM2(loadClassifierNM2("trained_classifierNM2.xml"), 0.5);
         this->erf1.push_back(er_filter1);
@@ -26,24 +27,21 @@ void OCRTess::init(int num) {
 void OCRTess::set(UMat f) {
 //    if (this->downsize) resize(f, f, Size(240, 240));
     if (f.cols < f.rows) {
-        transpose(this->img, this->img);
-        flip(this->img, this->img, 1);
+        transpose(f, f);
+        flip(f, f, 1);
     }
-    this->img = f;
+    bitwise_not(f, this->img);
+//    this->img = f;
 }
 
-void OCRTess::loop() {
-    int i = 0;
-    do {
-        detectAndRecog();
-        imshow("recognition with " + i, this->out);
-        transpose(this->img, this->img);
-        flip(this->img, this->img, 2);
-        i++;
-    } while (i < 2);
+bool OCRTess::loop() {
+    if (detectAndRecog()) return true;
+
+    flip(this->img, this->img, -1);
+    if (detectAndRecog()) return true;
 }
 
-void OCRTess::detectAndRecog() {
+bool OCRTess::detectAndRecog() {
     //double t_d = (double)getTickCount();
 
     UMat grey = UMat::zeros(this->img.rows + 2, this->img.cols + 2, CV_8UC1);
@@ -92,10 +90,12 @@ void OCRTess::detectAndRecog() {
             break;
         case 1:
         default:
-            erGrouping(this->img, channels, regions, nm_region_groups, nm_boxes, ERGROUPING_ORIENTATION_ANY, "./trained_classifier_erGrouping.xml", 0.5);
+            erGrouping(this->img, channels, regions, nm_region_groups, nm_boxes, ERGROUPING_ORIENTATION_ANY, "trained_classifier_erGrouping.xml", 0.5);
             break;
     }
     //cout << "TIME_GROUPING_ALT = " << ((double)getTickCount() - t_g)*1000/getTickFrequency() << endl;
+
+    if (nm_boxes.size() > 1) return false;
 
     this->img.copyTo(this->out);
 
@@ -124,6 +124,8 @@ void OCRTess::detectAndRecog() {
     vector<vector<string> > words((int) detections.size());
     vector<vector<float> > confidences((int) detections.size());
 
+    if (detections.size() > 1) return false;
+
     // parallel process detections in batches of ocrs.size() (== num_ocrs)
     for (int i = 0; i < (int) detections.size(); i = i + (int) this->num) {
         Range r;
@@ -135,13 +137,11 @@ void OCRTess::detectAndRecog() {
         parallel_for_(r, Parallel_OCR<OCRTesseract>(detections, outputs, boxes, words, confidences, this->ocrs));
     }
 
-
     for (int i = 0; i < (int) detections.size(); i++) {
         outputs[i].erase(remove(outputs[i].begin(), outputs[i].end(), '\n'), outputs[i].end());
         putText(this->out, outputs[i], Point(1, 1), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
 //        cout << "OCR output = \"" << outputs[i] << "\" lenght = " << outputs[i].size() << endl;
-        if (outputs[i].size() < 3)
-            continue;
+        if (outputs[i].size() < 3) continue;
 
         for (int j = 0; j < (int) boxes[i].size(); j++) {
             boxes[i][j].x += nm_boxes[i].x - 15;
@@ -160,10 +160,14 @@ void OCRTess::detectAndRecog() {
             putText(this->out, words[i][j], boxes[i][j].tl() - Point(1, 1), FONT_HERSHEY_SIMPLEX, scale_font, Scalar(255, 255, 255), (int) (3 * scale_font));
         }
     }
+
+    if (words_detection.size() > 1) return false;
+    return (words_detection[0].compare(WORD) == 0);
 }
 
-void OCRTess::show() {
-    imshow("recognition", this->out);
+void OCRTess::show(bool b) {
+    if (b) imshow("ocr", this->out);
+    else destroyWindow("ocr");
 }
 
 bool OCRTess::isRepetitive(const string &s) {

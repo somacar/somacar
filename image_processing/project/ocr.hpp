@@ -14,6 +14,8 @@
 #define GR_EX 0
 #define GR_MUL 1
 
+#define WORD "soma"
+
 using namespace std;
 using namespace cv;
 using namespace cv::text;
@@ -76,11 +78,11 @@ public:
 
     void set(UMat f);
 
-    void loop();
+    bool loop();
 
-    void detectAndRecog();
+    bool detectAndRecog();
 
-    void show();
+    void show(bool b);
 
     OCRTess(bool downsize, int region, int group);
 
@@ -93,7 +95,7 @@ private:
 
     int num;
     UMat img, out;
-    bool downsize;
+    bool downsize, found;
     int REGION, GROUP;
     vector<Ptr<OCRTesseract>> ocrs;
 

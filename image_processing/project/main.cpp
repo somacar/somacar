@@ -10,11 +10,17 @@ int main(int argc, char *argv[]) {
     UMat sqr;
     Target target;
     OCRTess tess(true, REG_MSER, GR_EX);
+    bool found = false;
     tess.init(10);
 
-//    frame = imread("sam.jpg");
-//    target.init(frame);
-//    target.detect();
+//    frame = imread("test.jpg");
+//    target.init(frame.getUMat(ACCESS_READ));
+//    if (target.find_square(&sqr)) {
+//        tess.set(sqr);
+//        found = tess.loop();
+//        tess.show(found);
+//    }
+//    target.found_word(found);
 //    target.show();
 //    waitKey(0);
 
@@ -23,10 +29,11 @@ int main(int argc, char *argv[]) {
         target.init(frame.getUMat(ACCESS_READ));
         if (target.find_square(&sqr)) {
             tess.set(sqr);
-            tess.loop();
-//            tess.detectAndRecog();
-//            tess.show();
+            found = tess.loop();
+//            found = tess.detectAndRecog();
+            tess.show(found);
         }
+        target.found_word(found);
         target.show();
         if ((char) waitKey(1) == 27) break;
     }

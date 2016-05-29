@@ -12,9 +12,10 @@
 #define LEFT 0
 #define RIGHT 1
 
-#define ORIG_WIDTH 25
+#define ORIG_WIDTH 14
 #define ORIG_DIS 73
-#define ORIG_P 1043
+#define ORIG_PIXEL 196
+#define ORIG_F (ORIG_PIXEL * ORIG_DIS / ORIG_WIDTH)
 
 #define DRAW Scalar(0, 0, 255)
 #define DRAW_THICK 1
@@ -34,13 +35,16 @@ public:
 
     bool is_square(vector<Point> c, Rect *rect);
 
-    void found();
+    void found_square();
+
+    void found_word(bool b);
 
     void show();
 
 private:
     UMat orig, cvt, draw;
-    int dir, dist;
+    int dir, dist, w, h;
+    float ratio;
     vector<Point> approx;
 };
 

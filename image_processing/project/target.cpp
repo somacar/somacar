@@ -25,7 +25,27 @@ void Target::init(UMat f, bool color) {
     this->cvt = f;
 }
 
-void Target::found() {
+bool Target::is_square(vector<Point> c, Rect *rect) {
+    this->w = 0;
+    this->h = 0;
+    this->ratio = 0;
+    if (this->approx.size() != 4) return false; // rectangular
+    *rect = boundingRect(this->approx);
+//    if ((rect->width < MIN_RECT) || (rect->height < MIN_RECT)) return false; // min size
+    this->dist = ORIG_WIDTH * ORIG_F / rect->width;
+    float ratio = rect->width / (float) rect->height;
+    this->w = rect->width;
+    this->h = rect->height;
+    this->ratio = ratio;
+
+    return !(ratio < 0.3 || (ratio > 0.7 && ratio < 1.8) || ratio > 2.2); // ratio
+//    vector<Point> hull;
+//    convexHull(c, hull);
+//    this->c = contourArea(c) / (float) contourArea(hull);
+//    return ((contourArea(c) / (float) contourArea(hull)) > 0.9);
+}
+
+void Target::found_square() {
     vector<vector<Point>> arr;
     arr.push_back(this->approx);
 
@@ -43,18 +63,8 @@ void Target::found() {
     else this->dir = RIGHT;
 }
 
-bool Target::is_square(vector<Point> c, Rect *rect) {
-    if (this->approx.size() != 4) return false; // rectangular
-    *rect = boundingRect(this->approx);
-    if ((rect->width < MIN_RECT) || (rect->height < MIN_RECT)) return false; // min size 25px * 25px
-    this->dist = ORIG_WIDTH * ORIG_P / rect->width;
-//    if ((rect->width / (float) rect->height < 0.8) || (rect->width / (float) rect->height > 1.2)) return false; // ratio
-    vector<Point> hull;
-    convexHull(c, hull);
-    return ((contourArea(c) / (float) contourArea(hull)) > 0.9);
-}
-
-void Target::show() {
+void Target::found_word(bool b) {
+    if (!b) return;
     string status;
     switch (this->dir) {
         case LEFT:
@@ -67,7 +77,12 @@ void Target::show() {
     }
     putText(this->draw, status, Point(20, 30), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
     putText(this->draw, to_string(this->dist) + " cm", Point(20, 100), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-    imshow("Original", this->draw);
+}
+
+void Target::show() {
+    putText(this->draw, to_string(this->ratio), Point(20, 120), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
+    putText(this->draw, to_string(this->w) + " * " + to_string(this->h), Point(20, 140), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
+    imshow("target", this->draw);
 }
 
 bool Target::find_square(UMat *sqr) {
@@ -78,7 +93,7 @@ bool Target::find_square(UMat *sqr) {
     for (auto const &c: contours) {
         approxPolyDP(c, this->approx, 0.01 * arcLength(c, true), true);
         if (is_square(c, &rect)) {
-            found();
+            found_square();
             *sqr = this->orig(rect);
 
             vector<Point2f> corn_pt, quad_pt;
