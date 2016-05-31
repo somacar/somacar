@@ -6,11 +6,14 @@ from subprocess import call, PIPE, STDOUT
 import subprocess
 import signal
 
+
 import socket
 REMOTE_SERVER = "www.google.com"
 ap_mode = False
 port_location = "/dev/ttyACM0"
 wpa_configure_file = "/etc/wpa.config"
+networkProc_pid = ""
+
 p_sr = serial.Serial(port_location,9600)
 p_sr.flushInput()
 
@@ -34,7 +37,9 @@ def timeout( p ):
         p.kill()
 
 def runProcess(exe): #execute System command
-	p = subprocess.Popen(exe, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,shell=True)
+	# signal.signal(signal.SIGALRM, signal_handler)
+	p = subprocess.Popen(exe, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,shell=True,preexec_fn=os.setsid)
+	yield "pid=" + os.getpgid(pro.pid)
 	while(True):
 		retcode = p.poll() #returns None while subprocess is running
 		line = p.stdout.readline()
@@ -72,14 +77,20 @@ while True:
 	    	# signal.signal(signal.SIGALRM, signal_handler)
 	    	# signal.alarm(20)   # Ten seconds limit for Network restart
 	    	
-	    	
+	    	temp_daemon_pid = "";
 	    	for line in runProcess("service networking restart"):
 	    		command_line = str(line)
+	    		if command_line.find("pid") == 0:
+	    			temp_damon_pid = command_line.split("=")[1]
+	    			signal.signal(signal.SIGALRM, handler)
+	    			signal.alarm(15)
+
 	    		if command_line.find("DHCPDISCOVER") ==0:
 	    			print('finded')
 	    			count = count + 1
 	    			
 	    			if command_line.find("DHCPACK") == 0:
+	    				signal.alarm(0)
 	    				print('command_line',command_line)
 	    				split_string = command_line.split("from ")
 	    				gateway_ip = split_string[1]
