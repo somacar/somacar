@@ -14,6 +14,10 @@
 #define GR_EX 0
 #define GR_MUL 1
 
+#define TR_NM1 string("trained_classifierNM1.xml")
+#define TR_NM2 string("trained_classifierNM2.xml")
+#define TR_GRP string("trained_classifier_erGrouping.xml")
+
 #define WORD "soma"
 
 using namespace std;

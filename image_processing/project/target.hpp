@@ -45,6 +45,7 @@ private:
     UMat orig, cvt, draw;
     int dir, dist, w, h;
     float ratio;
+    double c;
     vector<Point> approx;
 };
 

@@ -7,9 +7,8 @@ OCRTess::OCRTess(bool downsize, int region, int group) {
     this->GROUP = group;
 
     for (int i = 0; i < 2; i++) {
-        cout << "before er_filter" << endl;
-        Ptr<ERFilter> er_filter1 = createERFilterNM1(loadClassifierNM1("trained_classifierNM1.xml"), 8, 0.00015f, 0.13f, 0.2f, true, 0.1f);
-        Ptr<ERFilter> er_filter2 = createERFilterNM2(loadClassifierNM2("trained_classifierNM2.xml"), 0.5);
+        Ptr<ERFilter> er_filter1 = createERFilterNM1(loadClassifierNM1(DIR + TR_NM1), 8, 0.00015f, 0.13f, 0.2f, true, 0.1f);
+        Ptr<ERFilter> er_filter2 = createERFilterNM2(loadClassifierNM2(DIR + TR_NM2), 0.5);
         this->erf1.push_back(er_filter1);
         this->erf2.push_back(er_filter2);
     }
@@ -39,10 +38,11 @@ bool OCRTess::loop() {
 
     flip(this->img, this->img, -1);
     if (detectAndRecog()) return true;
+    return false;
 }
 
 bool OCRTess::detectAndRecog() {
-    //double t_d = (double)getTickCount();
+//    double t_d = (double)getTickCount();
 
     UMat grey = UMat::zeros(this->img.rows + 2, this->img.cols + 2, CV_8UC1);
     cvtColor(this->img, grey, COLOR_RGB2GRAY);
@@ -76,12 +76,12 @@ bool OCRTess::detectAndRecog() {
         }
     }
 
-    //cout << "TIME_REGION_DETECTION_ALT = " << ((double)getTickCount() - t_d)*1000/getTickFrequency() << endl;
+//    cout << "TIME_REGION_DETECTION_ALT = " << ((double)getTickCount() - t_d)*1000/getTickFrequency() << endl;
 
     /*Text Recognition (OCR)*/
 
     // Detect character groups
-    //double t_g = getTickCount();
+//    double t_g = getTickCount();
     vector<vector<Vec2i> > nm_region_groups;
     vector<Rect> nm_boxes;
     switch (this->GROUP) {
@@ -90,25 +90,21 @@ bool OCRTess::detectAndRecog() {
             break;
         case 1:
         default:
-            erGrouping(this->img, channels, regions, nm_region_groups, nm_boxes, ERGROUPING_ORIENTATION_ANY, "trained_classifier_erGrouping.xml", 0.5);
+            erGrouping(this->img, channels, regions, nm_region_groups, nm_boxes, ERGROUPING_ORIENTATION_ANY, DIR + TR_GRP, 0.5);
             break;
     }
-    //cout << "TIME_GROUPING_ALT = " << ((double)getTickCount() - t_g)*1000/getTickFrequency() << endl;
+//    cout << "TIME_GROUPING_ALT = " << ((double)getTickCount() - t_g)*1000/getTickFrequency() << endl;
 
-    if (nm_boxes.size() > 1) return false;
-
+    if (!nm_boxes.size() || nm_boxes.size() > 1) return false;
     this->img.copyTo(this->out);
 
     int scale = this->downsize ? 2 : 1;
-    float scale_img = (float) ((600.f / this->img.rows) / scale);
-    float scale_font = (float) (2 - scale_img) / 1.4f;
+    float scale_img = (600.f / this->img.rows) / scale;
+    float scale_font = (2 - scale_img) / 1.4f;
     vector<string> words_detection;
     float min_confidence1 = 51.f, min_confidence2 = 60.f;
 
     vector<UMat> detections;
-
-    //t_r = getTickCount();
-
     for (int i = 0; i < (int) nm_boxes.size(); i++) {
         rectangle(this->out, nm_boxes[i].tl(), nm_boxes[i].br(), Scalar(255, 255, 0), 3);
 
@@ -124,22 +120,17 @@ bool OCRTess::detectAndRecog() {
     vector<vector<string> > words((int) detections.size());
     vector<vector<float> > confidences((int) detections.size());
 
-    if (detections.size() > 1) return false;
+    if (!detections.size() || detections.size() > 1) return false;
 
-    // parallel process detections in batches of ocrs.size() (== num_ocrs)
-    for (int i = 0; i < (int) detections.size(); i = i + (int) this->num) {
+    for (int i = 0; i < (int) detections.size(); i = i + this->num) {
         Range r;
-        if (i + (int) this->num <= (int) detections.size())
-            r = Range(i, i + (int) this->num);
-        else
-            r = Range(i, (int) detections.size());
-
+        if (i + this->num <= (int) detections.size()) r = Range(i, i + this->num);
+        else r = Range(i, (int) detections.size());
         parallel_for_(r, Parallel_OCR<OCRTesseract>(detections, outputs, boxes, words, confidences, this->ocrs));
     }
 
     for (int i = 0; i < (int) detections.size(); i++) {
         outputs[i].erase(remove(outputs[i].begin(), outputs[i].end(), '\n'), outputs[i].end());
-        putText(this->out, outputs[i], Point(1, 1), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
 //        cout << "OCR output = \"" << outputs[i] << "\" lenght = " << outputs[i].size() << endl;
         if (outputs[i].size() < 3) continue;
 
@@ -161,7 +152,7 @@ bool OCRTess::detectAndRecog() {
         }
     }
 
-    if (words_detection.size() > 1) return false;
+    if (!words_detection.size() || words_detection.size() > 1) return false;
     return (words_detection[0].compare(WORD) == 0);
 }
 
