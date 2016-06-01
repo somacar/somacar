@@ -9,6 +9,10 @@ def img_view(request):
     return render_to_response('image.html', {"menu_img": True})
 
 
+def info_view(request):
+    return render_to_response('info.html', {"menu_info": True})
+
+
 def loc_create(request, lat, lon):
     Location.objects.create(pos=Geoposition(lat, lon))
     data = {'success': True}
