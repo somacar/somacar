@@ -4,14 +4,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="shortcut icon" href="{% static 'img/favico.ico' %}" type="image/x-icon">
-    <link rel="apple-touch-icon" href="{% static 'img/apple_icons_57x57.png' %}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/apple_icons_72x72.png' %}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/apple_icons_114x114.png' %}">
+    <link rel="shortcut icon" href="{% static 'custom/logo.png' %}">
+{#    <link rel="apple-touch-icon" href="{% static 'img/apple_icons_57x57.png' %}">#}
+{#    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/apple_icons_72x72.png' %}">#}
+{#    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/apple_icons_114x114.png' %}">#}
     <title>Soma Car</title>
     <link href="http://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Roboto:400,300,500,900" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{% static 'custom/style.css' %}" type="text/css" media="all"/>
     <link rel="stylesheet" href="{% static 'css/theme.css' %}" type="text/css" media="all"/>
     <link rel="stylesheet" href="{% static 'css/responsive.css' %}" type="text/css" media="all"/>
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css" media="all"/>
@@ -34,6 +34,9 @@
                         <li class="{% if menu_img %}current-menu-parent {% endif %}menu-item-has-children">
                             <a href="{% url 'img' %}"><span>이미지</span></a>
                         </li>
+                        <li class="{% if menu_info %}current-menu-parent {% endif %}menu-item-has-children">
+                            <a href="{% url 'info' %}"><span>소개</span></a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -45,6 +48,7 @@
 <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/modules.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/theme.js' %}"></script>
+<script type="text/javascript" src="{% static 'custom/custom.js' %}"></script>
 {% block script %}{% endblock %}
 </body>
 </html>

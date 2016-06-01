@@ -34,7 +34,7 @@
                 <div class="ribbon_list_wrapper">
                     <ul class="fw_gallery_list">
                         <li data-count="1" class="slide1">
-                            <img src="{% static 'img/portfolio/post/fullscreen_with_sidebar/1.jpg' %}" alt="image1"/>
+                            <a href="{% static 'img/soma.png' %}"><div id="img-container"></div></a>
                         </li>
                     </ul>
                 </div>
@@ -48,8 +48,7 @@
                         <span>Share this:</span>
                         <a href="" class="share_facebook"><i
                                 class="stand_icon icon-facebook-square"></i></a>
-                        <a href="" class="share_pinterest"><i
-                                class="stand_icon icon-pinterest"></i></a>
+                        <a href="" class="share_pinterest"><i class="stand_icon icon-pinterest"></i></a>
                         <a href="" class="share_tweet"><i class="stand_icon icon-twitter"></i></a>
                         <a href="" class="share_gplus"><i class="icon-google-plus-square"></i></a>
                         <div class="clear"></div>
@@ -68,15 +67,7 @@
     </div>
 {% endblock %}
 {% block script %}
-    <script type="text/javascript" src="{% static 'js/custom.js' %}"></script>
     <script type="text/javascript">
-        jQuery(window).resize(function ($) {
-            "use strict";
-            ribbon_setup();
-        });
-        jQuery(window).load(function ($) {
-            "use strict";
-            ribbon_setup();
-        });
+        img();
     </script>
 {% endblock %}
