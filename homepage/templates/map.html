@@ -22,16 +22,22 @@
             google.maps.event.addListenerOnce(map, 'tilesloaded', addMarkers);
         }
         function showPosition(position) {
-            map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+            var c = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            map.setCenter(c);
+            new google.maps.Marker({
+                position: c,
+                map: map,
+                icon: '{% static 'custom/cur.svg' %}',
+                title: 'title'
+            });
         }
         function addMarkers() {
+            var image = '{% static 'custom/marker.svg' %}';
             {% for mark in loc %}
-                var point = new google.maps.LatLng({{ mark.pos.latitude }}, {{ mark.pos.longitude }});
-                {#            var image = '{{ STATIC_PREFIX }}' + 'checkmark.png';#}
                 var marker = new google.maps.Marker({
-                    position: point,
+                    position: new google.maps.LatLng({{ mark.pos.latitude }}, {{ mark.pos.longitude }}),
                     map: map,
-                    {#                icon: image,#}
+                    icon: image,
                     title: 'title'
                 });
                 marker['info'] = new google.maps.InfoWindow({
