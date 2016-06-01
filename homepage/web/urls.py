@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', map_view, name="map"),
     url(r'^img$', img_view, name="img"),
+    url(r'^info$', info_view, name="info"),
     url(r'^location/(?P<lat>\d+)/(?P<lon>\d+)$', loc_create),
 ]
