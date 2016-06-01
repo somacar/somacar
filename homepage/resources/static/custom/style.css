@@ -22,3 +22,8 @@
 .module_content {
     text-align: center;
 }
+
+#img-container {
+    background: transparent url('/static/img/soma.png') no-repeat center;
+    background-size: contain;
+}
