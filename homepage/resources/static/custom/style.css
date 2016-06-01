@@ -27,3 +27,11 @@
     background: transparent url('/static/img/soma.png') no-repeat center;
     background-size: contain;
 }
+
+.icon-github {
+    color: #800080 !important;
+}
+
+.icon-bitbucket {
+    color: #205081 !important;
+}
