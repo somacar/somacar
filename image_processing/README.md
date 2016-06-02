@@ -62,6 +62,14 @@ $ sudo cmake -D CMAKE_BUILD_TYPE=RELEASE \
 $ sudo make -j4
 $ sudo make install
 ```
+- 프로젝트 빌드
+```
+$ cd image_processing
+$ mkdir build
+$ cd build
+$ cmake CMAKE_BUILD_TYPE=Release ..
+$ make
+```
 
 ### 전체 구성
 | | |

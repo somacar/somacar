@@ -24,20 +24,17 @@ void OCRTess::init(int num) {
 }
 
 void OCRTess::set(UMat f) {
-//    if (this->downsize) resize(f, f, Size(240, 240));
-    if (f.cols < f.rows) {
-        transpose(f, f);
-        flip(f, f, 1);
-    }
-    bitwise_not(f, this->img);
-//    this->img = f;
+    if (this->downsize && f.cols > 240) resize(f, f, Size(240, 240));
+    bitwise_not(f, this->img); // 색 반전
 }
 
 bool OCRTess::loop() {
     if (detectAndRecog()) return true;
-
-    flip(this->img, this->img, -1);
-    if (detectAndRecog()) return true;
+    transpose(this->img, this->img);
+    for (int i=0; i<3; i++) {
+        flip(this->img, this->img, 1);
+        if (detectAndRecog()) return true;
+    }
     return false;
 }
 
@@ -106,7 +103,7 @@ bool OCRTess::detectAndRecog() {
 
     vector<UMat> detections;
     for (int i = 0; i < (int) nm_boxes.size(); i++) {
-        rectangle(this->out, nm_boxes[i].tl(), nm_boxes[i].br(), Scalar(255, 255, 0), 3);
+//        rectangle(this->out, nm_boxes[i].tl(), nm_boxes[i].br(), Scalar(255, 255, 0), 3);
 
         UMat group_img = UMat::zeros(this->img.rows + 2, this->img.cols + 2, CV_8UC1);
 //        UMat u = group_img.getUMat(ACCESS_READ);
@@ -145,10 +142,10 @@ bool OCRTess::detectAndRecog() {
                 isRepetitive(words[i][j]))
                 continue;
             words_detection.push_back(words[i][j]);
-            rectangle(this->out, boxes[i][j].tl(), boxes[i][j].br(), Scalar(255, 0, 255), 3);
-            Size word_size = getTextSize(words[i][j], FONT_HERSHEY_SIMPLEX, (double) scale_font, (int) (3 * scale_font), NULL);
-            rectangle(this->out, boxes[i][j].tl() - Point(3, word_size.height + 3), boxes[i][j].tl() + Point(word_size.width, 0), Scalar(255, 0, 255), -1);
-            putText(this->out, words[i][j], boxes[i][j].tl() - Point(1, 1), FONT_HERSHEY_SIMPLEX, scale_font, Scalar(255, 255, 255), (int) (3 * scale_font));
+//            rectangle(this->out, boxes[i][j].tl(), boxes[i][j].br(), Scalar(255, 0, 255), 3);
+//            Size word_size = getTextSize(words[i][j], FONT_HERSHEY_SIMPLEX, (double) scale_font, (int) (3 * scale_font), NULL);
+//            rectangle(this->out, boxes[i][j].tl() - Point(3, word_size.height + 3), boxes[i][j].tl() + Point(word_size.width, 0), Scalar(255, 0, 255), -1);
+//            putText(this->out, words[i][j], boxes[i][j].tl() - Point(1, 1), FONT_HERSHEY_SIMPLEX, scale_font, Scalar(255, 255, 255), (int) (3 * scale_font));
         }
     }
 
@@ -159,6 +156,7 @@ bool OCRTess::detectAndRecog() {
 void OCRTess::show(bool b) {
     if (b) imshow("ocr", this->out);
     else destroyWindow("ocr");
+//    imshow("ocrr", this->img);
 }
 
 bool OCRTess::isRepetitive(const string &s) {

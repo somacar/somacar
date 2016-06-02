@@ -99,7 +99,7 @@ private:
 
     int num;
     UMat img, out;
-    bool downsize, found;
+    bool downsize;
     int REGION, GROUP;
     vector<Ptr<OCRTesseract>> ocrs;
 

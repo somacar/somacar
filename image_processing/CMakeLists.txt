@@ -16,7 +16,6 @@ else ()
     message(WARNING "Tesseract:   NO")
 endif ()
 add_definitions(-DWITH_OPENGL=ON)
-message(WARNING ${PROJECT_DIR})
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${Tesseract_INCLUDE_DIR})
