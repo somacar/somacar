@@ -23,14 +23,15 @@ void OCRTess::init(int num) {
 //    cout << "TIME_OCR_INITIALIZATION_ALT = "<< ((double)getTickCount() - t_r)*1000/getTickFrequency() << endl;
 }
 
-void OCRTess::set(UMat f) {
+void OCRTess::set(Mat m, UMat f) {
+    this->m = m;
     if (this->downsize && f.cols > 240) resize(f, f, Size(240, 240));
     bitwise_not(f, this->img); // 색 반전
 }
 
 bool OCRTess::loop() {
     if (detectAndRecog()) return true;
-    transpose(this->img, this->img);
+    transpose(this->m, this->img);
     for (int i=0; i<3; i++) {
         flip(this->img, this->img, 1);
         if (detectAndRecog()) return true;
