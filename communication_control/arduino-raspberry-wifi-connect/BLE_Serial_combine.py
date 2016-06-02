@@ -9,11 +9,15 @@ import shlex
 import os
 
 
+import threading
+
+
 
 
 #Serial config 
 Serial_Location_port = "/dev/ttyACM0"
 Serial_wpa_configure_file = "/etc/wpa.config"
+p_sr = serial.Serial(Serial_Location_port,9600)
 
 #Bluetooth config
 BT_ap_mode = False
@@ -59,6 +63,7 @@ def BluetoothReceiver():
 		split_data = str(data).split("'")[1]
 		command_str = split_data.split('\\r\\n')[0]
 		bluetoothHandler(command_str, client_sock)
+		client_sock.send("Send")
 
 #	except Exception as e:
 		#print("Error", e)
@@ -66,6 +71,7 @@ def BluetoothReceiver():
 		#server_sock.close()
 
 def bluetoothHandler(value, client_sock):
+	
 	global BT_ap_mode
 	if value == "wifi":
 		client_sock.send("Sent from Handler")
@@ -132,18 +138,31 @@ def bluetoothHandler(value, client_sock):
 		ap_mode = False
 
 
-def SerialReceiver():
-	p_sr = serial.Serial(Serial_Location_port,9600)
+def SerialReceiver(p_sr):
 	p_sr.flushInput()
 	while True:
 		try:
 			debug = str(p_sr.readline())
-			test = debug.replace(r"\r\n" ,"")
-			test3 = test.replace("b'", "")
-			SerialString = test3.replace("'" , "")
-			print(SerialString)
-		except:
-			print("")
+			if debug:
+				test = debug.replace(r"\r\n" ,"")
+				test3 = test.replace("b'", "")
+				test4 = test3.replace("'" , "")
 
-BluetoothReceiver()
-#SerialReceiver()
+				print(" ".join("{:02x}".format(ord(c)) for c in test4))
+				#Print like (arduino serial = string)
+				# 32 38 39 7c 32 38 37 7c 32 38 34 7c 32 38 34 7c 32 38 39 7c 32 35 34 7c 52 69 67 68 74
+				# 72 69 67 68 74 20 6d 6f 74 65 72 20 66 6f 72 77 61 72 64
+
+
+
+		except:
+			print("Exception ")
+
+
+
+thread1 = threading.Thread(target=SerialReceiver, args=(p_sr,))
+thread1.start()
+
+thread2 = threading.Thread(target=BluetoothReceiver, args=())
+thread2.start()
+
