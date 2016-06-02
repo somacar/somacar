@@ -12,36 +12,31 @@ Target::Target() { }
 void Target::init(UMat f, bool color) {
     f.copyTo(this->orig);
     f.copyTo(this->draw);
-    if (!color) cvtColor(f, f, COLOR_RGB2GRAY);
-    else {
+    if (!color) {
+        cvtColor(f, f, COLOR_RGB2GRAY);
+        threshold(f, f, 128, 255, THRESH_BINARY | THRESH_OTSU);
+//        inRange(f, Scalar(0, 0, 0, 0), Scalar(160, 255, 30, 0), f);
+    } else {
         assert(f.type() == CV_8UC3);
         cvtColor(f, f, COLOR_BGR2HSV);
         inRange(f, LOWCOLOR, UPCOLOR, f);
 //        mask = cv2.erode(mask, None, iterations=2)
 //        mask = cv2.dilate(mask, None, iterations=2)
     }
-    GaussianBlur(f, f, Size(7, 7), 0);
+    GaussianBlur(f, f, Size(7, 7), 1.5, 1.5);
     Canny(f, f, 50, 150);
     this->cvt = f;
 }
 
 bool Target::is_square(vector<Point> c, Rect *rect) {
-    this->w = 0;
-    this->h = 0;
-    this->ratio = 0;
     if (this->approx.size() != 4) return false; // rectangular
     *rect = boundingRect(this->approx);
     if ((rect->width < MIN_RECT) || (rect->height < MIN_RECT)) return false; // min size
     this->dist = ORIG_WIDTH * ORIG_F / rect->width;
-    float ratio = rect->width / (float) rect->height;
-    this->w = rect->width;
-    this->h = rect->height;
-    this->ratio = ratio;
-    if (ratio < 0.3 || (ratio > 0.7 && ratio < 1.8) || ratio > 2.2) return false; // ratio
+    if (rect->width / (float) rect->height < 0.8 || rect->width / (float) rect->height > 1.2) return false; // ratio
     vector<Point> hull;
     convexHull(c, hull);
-    this->c = contourArea(c) / (float) contourArea(hull);
-    return ((contourArea(c) / (float) contourArea(hull)) > 0.5);
+    return ((contourArea(c) / (float) contourArea(hull)) > 0.9);
 }
 
 void Target::found_square() {
@@ -57,11 +52,6 @@ void Target::found_square() {
     for (int i = 0; i < this->approx.size(); i++) {
         putText(this->draw, toString(this->approx[i]), this->approx[i], FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
     }
-
-    putText(this->draw, toString(this->approx[0]), Point(20, 160), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-    putText(this->draw, toString(this->approx[1]), Point(20, 180), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-    putText(this->draw, toString(this->approx[2]), Point(20, 200), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-    putText(this->draw, toString(this->approx[3]), Point(20, 220), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
 
     if (center.x < this->orig.size().width / 2) this->dir = LEFT;
     else this->dir = RIGHT;
@@ -84,9 +74,6 @@ void Target::found_word(bool b) {
 }
 
 void Target::show() {
-    putText(this->draw, to_string(this->ratio), Point(20, 120), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-    putText(this->draw, to_string(this->w) + " * " + to_string(this->h), Point(20, 140), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-    putText(this->draw, to_string(this->c), Point(20, 240), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
     imshow("target", this->draw);
 }
 
