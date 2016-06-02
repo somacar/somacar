@@ -10,4 +10,6 @@
 
 #define MIN_RECT 25
 
+#include <opencv2/core/ocl.hpp>
+
 #endif

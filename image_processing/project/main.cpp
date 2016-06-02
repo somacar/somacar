@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
 //    target.show();
 //    waitKey(0);
 
+    ocl::setUseOpenCL(true);
 
     while (true) {
         v.read(frame);
