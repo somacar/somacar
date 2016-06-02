@@ -9,11 +9,11 @@ string toString(Point p) {
 
 Target::Target() { }
 
-void Target::init(UMat f, bool color) {
-    f.copyTo(this->orig);
-    f.copyTo(this->draw);
+void Target::init(Mat m, bool color) {
+    UMat f;
+    this->orig = this->draw = m.getUMat(ACCESS_READ);
     if (!color) {
-        cvtColor(f, f, COLOR_RGB2GRAY);
+        cvtColor(m, f, COLOR_RGB2GRAY);
         threshold(f, f, 128, 255, THRESH_BINARY | THRESH_OTSU);
 //        inRange(f, Scalar(0, 0, 0, 0), Scalar(160, 255, 30, 0), f);
     } else {
