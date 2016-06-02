@@ -11,6 +11,8 @@ int main(int argc, char *argv[]) {
     Target target;
     OCRTess tess(true, REG_MSER, GR_EX);
     bool found = false;
+
+    assert(v.isOpened());
     tess.init(10);
 
 //    frame = imread("test.jpg");
@@ -23,6 +25,7 @@ int main(int argc, char *argv[]) {
 //    target.found_word(found);
 //    target.show();
 //    waitKey(0);
+
 
     while (true) {
         v.read(frame);
