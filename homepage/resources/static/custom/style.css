@@ -35,3 +35,12 @@
 .icon-bitbucket {
     color: #205081 !important;
 }
+
+.gallery_likes,
+.post-views {
+    margin-left: 5px !important;
+}
+
+.block_likes {
+    float: right !important;
+}

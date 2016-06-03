@@ -1,7 +1,9 @@
 function info() {
     $.getJSON('https://api.github.com/repos/somacar/somacar', function (data) {
         // use data.stargazers_count
-        alert(JSON.stringify(data));
+        $('#github-watch span').text(data.watchers);
+        $('#github-star span').text(data.stargazers_count);
+        $('#github-href').attr('href', data.html_url).text(data.html_url);
     });
 }
 
