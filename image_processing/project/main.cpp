@@ -28,15 +28,13 @@ int main(int argc, char *argv[]) {
 
     while (true) {
         v.read(frame);
-        //resize(frame, frame, Size(frame.cols/2, frame.rows/2));
+        resize(frame, frame, Size(frame.cols/2, frame.rows/2));
         target.init(frame.getUMat(ACCESS_READ));
         if (target.find_square(&sqr)) {
             tess.set(sqr);
-            cout << "set" << endl;
+            cout << "tess set " << endl;
             found = tess.loop();
-            cout << "loop" << endl;
-            tess.show(found);
-            cout << "show" << endl;
+//            tess.show(found);
         }
         target.found_word(found);
         target.show();

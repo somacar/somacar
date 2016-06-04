@@ -98,7 +98,6 @@ private:
     void er_draw(vector<UMat> &channels, vector<vector<ERStat> > &regions, vector<Vec2i> group, UMat &segmentation);
 
     int num;
-    Mat m;
     UMat img, out;
     bool downsize;
     int REGION, GROUP;

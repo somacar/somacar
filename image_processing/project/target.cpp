@@ -10,9 +10,10 @@ string toString(Point p) {
 Target::Target() { }
 
 void Target::init(UMat u, bool color) {
-    this->orig = this->draw = u;
+    this->orig = u.clone();
+    this->draw = u.clone();
     if (!color) {
-        cvtColor(u, u, COLOR_RGB2GRAY);
+        cvtColor(u.clone(), u, COLOR_RGB2GRAY);
         //threshold(u, u, 128, 255, THRESH_BINARY | THRESH_OTSU);
 //        inRange(f, Scalar(0, 0, 0, 0), Scalar(160, 255, 30, 0), f);
     } else {
@@ -57,6 +58,7 @@ void Target::found_square() {
 
 void Target::found_word(bool b) {
     if (!b) return;
+    cout << "found word !!!!!!!!!!!!!!!" << endl;
     string status;
     switch (this->dir) {
         case LEFT:

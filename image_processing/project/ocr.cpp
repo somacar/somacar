@@ -24,21 +24,26 @@ void OCRTess::init(int num) {
 }
 
 void OCRTess::set(UMat u) {
-//    this->m = m;
     if (this->downsize && u.cols > 240) resize(u, u, Size(240, 240));
     bitwise_not(u, this->img); // 색 반전
 }
 
 bool OCRTess::loop() {
-    if (detectAndRecog()) return true;
-    cout << "bef trans" << endl;
-    this->img.t();
-    cout << "aft tarns" << endl;
-    for (int i=0; i<3; i++) {
+    bool f;
+
+    int i = 0;
+    do {
+        f = detectAndRecog();
+        imshow("ocr" + to_string(i), this->out);
+        if (f) break;
+        this->img = this->img.t();
         flip(this->img, this->img, 1);
-        if (detectAndRecog()) return true;
-    }
-    return false;
+        i++;
+    } while (i < 4);
+
+//    for (int j=i; j<4; j++)
+//        destroyWindow("ocr" + to_string(j));
+    return f;
 }
 
 bool OCRTess::detectAndRecog() {
@@ -75,7 +80,6 @@ bool OCRTess::detectAndRecog() {
             break;
         }
     }
-
     cout << "region" << endl;
 //    cout << "TIME_REGION_DETECTION_ALT = " << ((double)getTickCount() - t_d)*1000/getTickFrequency() << endl;
 
@@ -97,9 +101,7 @@ bool OCRTess::detectAndRecog() {
 //    cout << "TIME_GROUPING_ALT = " << ((double)getTickCount() - t_g)*1000/getTickFrequency() << endl;
 
     if (!nm_boxes.size() || nm_boxes.size() > 1) return false;
-//    this->img.copyTo(this->out);
-
-    cout << "group " << nm_boxes.size() << endl;
+    this->out = this->img.clone();
 
     int scale = this->downsize ? 2 : 1;
     float scale_img = (600.f / this->img.rows) / scale;
@@ -108,19 +110,18 @@ bool OCRTess::detectAndRecog() {
     float min_confidence1 = 51.f, min_confidence2 = 60.f;
 
     vector<UMat> detections;
-    UMat group_img;
     for (int i = 0; i < (int) nm_boxes.size(); i++) {
 //        rectangle(this->out, nm_boxes[i].tl(), nm_boxes[i].br(), Scalar(255, 255, 0), 3);
 
-        group_img = UMat::zeros(this->img.rows + 2, this->img.cols + 2, CV_8UC1);
-        cout << "zero group_img" << endl;
+        UMat group_img = UMat::zeros(this->img.rows + 2, this->img.cols + 2, CV_8UC1);
 //        UMat u = group_img.getUMat(ACCESS_READ);
         er_draw(channels, regions, nm_region_groups[i], group_img);
-        cout << "group_img dr draw" << endl;
-        group_img(nm_boxes[i]).copyTo(group_img);
-        cout << "copy to" << endl;
-//        copyMakeBorder(group_img, group_img, 15, 15, 15, 15, BORDER_CONSTANT, Scalar(0));
-        cout << "copy make border" << endl;
+        cout << "groupimg" << endl;
+        group_img = group_img(nm_boxes[i]);
+//      group_img(nm_boxes[i]).copyTo(group_img);
+        cout << "bef copy" << endl;
+        copyMakeBorder(group_img.clone(), group_img, 15, 15, 15, 15, BORDER_CONSTANT, Scalar(0));
+        cout << "aft copy" << endl;
         detections.push_back(group_img);
     }
     vector<string> outputs((int) detections.size());
@@ -128,8 +129,7 @@ bool OCRTess::detectAndRecog() {
     vector<vector<string> > words((int) detections.size());
     vector<vector<float> > confidences((int) detections.size());
 
-    cout << "detections " << detections.size() << endl;
-
+    cout << "detects " << detections.size() << endl;
     if (!detections.size() || detections.size() > 1) return false;
 
     for (int i = 0; i < (int) detections.size(); i = i + this->num) {
@@ -143,11 +143,9 @@ bool OCRTess::detectAndRecog() {
         outputs[i].erase(remove(outputs[i].begin(), outputs[i].end(), '\n'), outputs[i].end());
 //        cout << "OCR output = \"" << outputs[i] << "\" lenght = " << outputs[i].size() << endl;
         if (outputs[i].size() < 3) continue;
-
         for (int j = 0; j < (int) boxes[i].size(); j++) {
             boxes[i][j].x += nm_boxes[i].x - 15;
             boxes[i][j].y += nm_boxes[i].y - 15;
-
 //            cout << "  word = " << words[j] << "\t confidence = " << confidences[j] << endl;
             if ((words[i][j].size() < 2) || (confidences[i][j] < min_confidence1) ||
                 ((words[i][j].size() == 2) && (words[i][j][0] == words[i][j][1])) ||
@@ -163,12 +161,14 @@ bool OCRTess::detectAndRecog() {
     }
 
     if (!words_detection.size() || words_detection.size() > 1) return false;
+    cout << "word detected : " << words_detection[0] << endl;
     return (words_detection[0].compare(WORD) == 0);
 }
 
 void OCRTess::show(bool b) {
-    if (b) imshow("ocr", this->img);
-    else destroyWindow("ocr");
+//    if (b)
+//    imshow("ocr", this->img);
+//    else destroyWindow("ocr");
 //    imshow("ocrr", this->img);
 }
 
