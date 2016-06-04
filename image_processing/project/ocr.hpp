@@ -80,7 +80,7 @@ class OCRTess {
 public:
     void init(int num);
 
-    void set(Mat m, UMat f);
+    void set(UMat u);
 
     bool loop();
 

@@ -26,16 +26,17 @@ int main(int argc, char *argv[]) {
 //    target.show();
 //    waitKey(0);
 
-    ocl::setUseOpenCL(true);
-
     while (true) {
         v.read(frame);
-        resize(frame, frame, Size(frame.cols/2, frame.rows/2));
-        target.init(frame);
+        //resize(frame, frame, Size(frame.cols/2, frame.rows/2));
+        target.init(frame.getUMat(ACCESS_READ));
         if (target.find_square(&sqr)) {
             tess.set(sqr);
+            cout << "set" << endl;
             found = tess.loop();
+            cout << "loop" << endl;
             tess.show(found);
+            cout << "show" << endl;
         }
         target.found_word(found);
         target.show();

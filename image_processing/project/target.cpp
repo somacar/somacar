@@ -9,23 +9,21 @@ string toString(Point p) {
 
 Target::Target() { }
 
-void Target::init(Mat m, bool color) {
-    UMat f;
-    this->orig = this->draw = m.getUMat(ACCESS_READ);
+void Target::init(UMat u, bool color) {
+    this->orig = this->draw = u;
     if (!color) {
-        cvtColor(m, f, COLOR_RGB2GRAY);
-        threshold(f, f, 128, 255, THRESH_BINARY | THRESH_OTSU);
+        cvtColor(u, u, COLOR_RGB2GRAY);
+        //threshold(u, u, 128, 255, THRESH_BINARY | THRESH_OTSU);
 //        inRange(f, Scalar(0, 0, 0, 0), Scalar(160, 255, 30, 0), f);
     } else {
-        assert(f.type() == CV_8UC3);
-        cvtColor(f, f, COLOR_BGR2HSV);
-        inRange(f, LOWCOLOR, UPCOLOR, f);
+        cvtColor(u, u, COLOR_BGR2HSV);
+        inRange(u, LOWCOLOR, UPCOLOR, u);
 //        mask = cv2.erode(mask, None, iterations=2)
 //        mask = cv2.dilate(mask, None, iterations=2)
     }
-    GaussianBlur(f, f, Size(7, 7), 1.5, 1.5);
-    Canny(f, f, 50, 150);
-    this->cvt = f;
+    GaussianBlur(u, u, Size(7, 7), 1.5, 1.5);
+    Canny(u, u, 50, 150);
+    this->cvt = u;
 }
 
 bool Target::is_square(vector<Point> c, Rect *rect) {

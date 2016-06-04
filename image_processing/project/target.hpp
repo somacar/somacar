@@ -29,7 +29,7 @@ class Target {
 public:
     Target();
 
-    void init(Mat m, bool color = false);
+    void init(UMat u, bool color = false);
 
     bool find_square(UMat *sqr);
 
