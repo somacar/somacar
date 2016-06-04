@@ -34,7 +34,7 @@ bool OCRTess::loop() {
     int i = 0;
     do {
         f = detectAndRecog();
-        imshow("ocr" + to_string(i), this->out);
+//        imshow("ocr" + to_string(i), this->out);
         if (f) break;
         this->img = this->img.t();
         flip(this->img, this->img, 1);
@@ -80,7 +80,6 @@ bool OCRTess::detectAndRecog() {
             break;
         }
     }
-    cout << "region" << endl;
 //    cout << "TIME_REGION_DETECTION_ALT = " << ((double)getTickCount() - t_d)*1000/getTickFrequency() << endl;
 
     /*Text Recognition (OCR)*/
@@ -116,12 +115,9 @@ bool OCRTess::detectAndRecog() {
         UMat group_img = UMat::zeros(this->img.rows + 2, this->img.cols + 2, CV_8UC1);
 //        UMat u = group_img.getUMat(ACCESS_READ);
         er_draw(channels, regions, nm_region_groups[i], group_img);
-        cout << "groupimg" << endl;
         group_img = group_img(nm_boxes[i]);
 //      group_img(nm_boxes[i]).copyTo(group_img);
-        cout << "bef copy" << endl;
         copyMakeBorder(group_img.clone(), group_img, 15, 15, 15, 15, BORDER_CONSTANT, Scalar(0));
-        cout << "aft copy" << endl;
         detections.push_back(group_img);
     }
     vector<string> outputs((int) detections.size());
@@ -129,7 +125,6 @@ bool OCRTess::detectAndRecog() {
     vector<vector<string> > words((int) detections.size());
     vector<vector<float> > confidences((int) detections.size());
 
-    cout << "detects " << detections.size() << endl;
     if (!detections.size() || detections.size() > 1) return false;
 
     for (int i = 0; i < (int) detections.size(); i = i + this->num) {
@@ -161,7 +156,6 @@ bool OCRTess::detectAndRecog() {
     }
 
     if (!words_detection.size() || words_detection.size() > 1) return false;
-    cout << "word detected : " << words_detection[0] << endl;
     return (words_detection[0].compare(WORD) == 0);
 }
 
