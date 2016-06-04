@@ -27,29 +27,38 @@ bool Target::is_square(vector<Point> c, Rect *rect) {
 
 void Target::found_word(bool b) {
     if (!b) return;
+    cout << "found word !!!!!!!!!!!!!!!" << endl;
     vector<vector<Point>> arr;
     arr.push_back(this->approx);
-    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
     Moments M = moments(this->approx);
     Point center = Point2f((int) (M.m10 / M.m00), (int) (M.m01 / M.m00));
     int dir;
     if (center.x < this->orig.size().width / 2) dir = LEFT;
     else dir = RIGHT;
-    cout << "found word !!!!!!!!!!!!!!!" << endl;
-    string status;
     switch (dir) {
         case LEFT:
-            status = "Go Right !";
+            cout << "left" << endl;
             break;
         case RIGHT:
         default:
-            status = "Go Left !";
+            cout << "right" << endl;
             break;
     }
-    line(this->draw, Point(center.x, center.y - DRAW_CROSS), Point(center.x, center.y + DRAW_CROSS), DRAW, DRAW_THICK);
-    line(this->draw, Point(center.x - DRAW_CROSS, center.y), Point(center.x + DRAW_CROSS, center.y), DRAW, DRAW_THICK);
-    putText(this->draw, status, Point(20, 30), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-    putText(this->draw, to_string(this->dist) + " cm", Point(20, 100), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
+//    string status;
+//    switch (dir) {
+//        case LEFT:
+//            status = "Go Right !";
+//            break;
+//        case RIGHT:
+//        default:
+//            status = "Go Left !";
+//            break;
+//    }
+//    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
+//    line(this->draw, Point(center.x, center.y - DRAW_CROSS), Point(center.x, center.y + DRAW_CROSS), DRAW, DRAW_THICK);
+//    line(this->draw, Point(center.x - DRAW_CROSS, center.y), Point(center.x + DRAW_CROSS, center.y), DRAW, DRAW_THICK);
+//    putText(this->draw, status, Point(20, 30), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
+//    putText(this->draw, to_string(this->dist) + " cm", Point(20, 100), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
 }
 
 void Target::show() {

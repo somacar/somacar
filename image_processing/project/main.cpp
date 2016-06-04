@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
             found = tess.loop();
             target.found_word(found);
         }
-        target.show();
+//        target.show();
         if ((char) waitKey(1) == 27) break;
     }
     return 0;

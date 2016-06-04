@@ -24,23 +24,28 @@ void OCRTess::init(int num) {
 }
 
 void OCRTess::set(UMat u) {
-    if (this->downsize && u.cols > 240) resize(u, u, Size(240, 240));
+    if (this->downsize && u.cols > 100) resize(u, u, Size(100, 100));
     bitwise_not(u, this->img); // 색 반전
 }
 
 bool OCRTess::loop() {
-    bool f;
+    if (detectAndRecog()) return true;
+//    this->img = this->img.t();
+//    flip(this->img, this->img, 1);
 
-    int i = 0;
-    do {
-        f = detectAndRecog();
-        if (f) break;
-        this->img = this->img.t();
-        flip(this->img, this->img, 1);
-        i++;
-    } while (i < 4);
 
-    return f;
+//    bool f;
+
+//    int i = 0;
+//    do {
+//        f = detectAndRecog();
+//        if (f) break;
+//        this->img = this->img.t();
+//        flip(this->img, this->img, 1);
+//        i++;
+//    } while (i < 4);
+//
+//    return f;
 }
 
 bool OCRTess::detectAndRecog() {
