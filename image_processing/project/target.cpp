@@ -1,12 +1,14 @@
 #include "main.hpp"
 #include "target.hpp"
 
+RNG rngee(12345);
+
 Target::Target() { }
 
 void Target::init(UMat u) {
-    this->orig = u.clone();
     this->draw = u.clone();
     cvtColor(u.clone(), u, COLOR_RGB2GRAY);
+    this->orig = u.clone();
     //threshold(u, u, 128, 255, THRESH_BINARY | THRESH_OTSU);
     //inRange(f, Scalar(0, 0, 0, 0), Scalar(160, 255, 30, 0), f);
     GaussianBlur(u, u, Size(7, 7), 1.5, 1.5);
@@ -25,6 +27,40 @@ bool Target::is_square(vector<Point> c, Rect *rect) {
     return ((contourArea(c) / (float) contourArea(hull)) > 0.9);
 }
 
+bool Target::is_star(UMat u) {
+    double divMaxSize = 0.175, divMinSize = 0.125;
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
+
+    double c;
+//
+//    cvtColor(u, u, CV_RGB2GRAY);
+    threshold(u, u, 100, 255, 0);
+//
+    findContours(u, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+//
+    for (int i=0; i < contours.size(); i++) {
+        Scalar color = Scalar( rngee.uniform(0, 255), rngee.uniform(0,255), rngee.uniform(0,255) );
+        c = sqrt(contourArea(contours[i]))/arcLength(contours[i], true );
+        cout << "sqrt(Area)/arcLength = " << c << endl;
+        if(sqrt(contourArea(contours[i]))/arcLength(contours[i], true ) < divMaxSize && sqrt(contourArea(contours[i]))/arcLength(contours[i], true) > divMinSize)
+        {
+            drawContours(this->draw, contours, i, color, 2, 8, hierarchy, 0, Point() );
+            cout << "I'm a star!" << endl;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Target::found(bool b) {
+    if (!b) return;
+    cout << "found!!!!!!!!!!!!!!!!!!" << endl;
+    vector<vector<Point>> arr;
+    arr.push_back(this->approx);
+    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
+}
+
 void Target::found_word(bool b) {
     if (!b) return;
     cout << "found word !!!!!!!!!!!!!!!" << endl;
@@ -35,15 +71,15 @@ void Target::found_word(bool b) {
     int dir;
     if (center.x < this->orig.size().width / 2) dir = LEFT;
     else dir = RIGHT;
-    switch (dir) {
-        case LEFT:
-            cout << "left" << endl;
-            break;
-        case RIGHT:
-        default:
-            cout << "right" << endl;
-            break;
-    }
+//    switch (dir) {
+//        case LEFT:
+//            cout << "left" << endl;
+//            break;
+//        case RIGHT:
+//        default:
+//            cout << "right" << endl;
+//            break;
+//    }
 //    string status;
 //    switch (dir) {
 //        case LEFT:
@@ -54,7 +90,7 @@ void Target::found_word(bool b) {
 //            status = "Go Left !";
 //            break;
 //    }
-//    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
+    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
 //    line(this->draw, Point(center.x, center.y - DRAW_CROSS), Point(center.x, center.y + DRAW_CROSS), DRAW, DRAW_THICK);
 //    line(this->draw, Point(center.x - DRAW_CROSS, center.y), Point(center.x + DRAW_CROSS, center.y), DRAW, DRAW_THICK);
 //    putText(this->draw, status, Point(20, 30), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
@@ -85,6 +121,7 @@ bool Target::find_square(UMat *sqr) {
 
             UMat tr = getPerspectiveTransform(corn_pt, quad_pt).getUMat(ACCESS_READ);
             warpPerspective(this->orig.clone(), *sqr, tr, sqr->size());
+            this->c = c;
             return true;
         }
     }

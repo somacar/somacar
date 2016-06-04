@@ -35,12 +35,16 @@ public:
 
     void found_word(bool b);
 
+    bool is_star(UMat u);
+
+    void found(bool b);
+
     void show();
 
 private:
     UMat orig, cvt, draw;
     int dist;
-    vector<Point> approx;
+    vector<Point> approx, c;
 };
 
 #endif

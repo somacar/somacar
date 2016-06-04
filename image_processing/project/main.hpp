@@ -9,6 +9,6 @@
 #define DRAW_THICK 1
 #define DRAW_CROSS 10
 
-#define MIN_RECT 25
+#define MIN_RECT 0
 
 #endif

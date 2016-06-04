@@ -8,12 +8,12 @@ int main(int argc, char *argv[]) {
     VideoCapture v(0);
     Mat frame;
     UMat sqr;
-    Target target;
-    OCRTess tess(true, REG_MSER, GR_EX);
+    Target target, inside;
+//    OCRTess tess(true, REG_MSER, GR_EX);
     bool found;
 
     assert(v.isOpened());
-    tess.init(10);
+//    tess.init(10);
 
 //    frame = imread("test.jpg");
 //    target.init(frame.getUMat(ACCESS_READ));
@@ -31,11 +31,15 @@ int main(int argc, char *argv[]) {
         resize(frame, frame, Size(frame.cols/2, frame.rows/2));
         target.init(frame.getUMat(ACCESS_READ));
         if (target.find_square(&sqr)) {
-            tess.set(sqr);
-            found = tess.loop();
-            target.found_word(found);
+//            inside.init(sqr);
+            found = target.is_star(sqr);
+//            found = inside.is_star(sqr);
+//            tess.set(sqr);
+//            found = tess.loop();
+//            found = true;
+            target.found(found);
         }
-//        target.show();
+        target.show();
         if ((char) waitKey(1) == 27) break;
     }
     return 0;

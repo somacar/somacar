@@ -29,23 +29,22 @@ void OCRTess::set(UMat u) {
 }
 
 bool OCRTess::loop() {
-    if (detectAndRecog()) return true;
+//    if (detectAndRecog()) return true;
 //    this->img = this->img.t();
 //    flip(this->img, this->img, 1);
+//    return false;
 
+    bool f;
+    int i = 0;
+    do {
+        f = detectAndRecog();
+        if (f) break;
+        this->img = this->img.t();
+        flip(this->img, this->img, 1);
+        i++;
+    } while (i < 4);
 
-//    bool f;
-
-//    int i = 0;
-//    do {
-//        f = detectAndRecog();
-//        if (f) break;
-//        this->img = this->img.t();
-//        flip(this->img, this->img, 1);
-//        i++;
-//    } while (i < 4);
-//
-//    return f;
+    return f;
 }
 
 bool OCRTess::detectAndRecog() {
@@ -101,6 +100,7 @@ bool OCRTess::detectAndRecog() {
     }
 //    cout << "TIME_GROUPING_ALT = " << ((double)getTickCount() - t_g)*1000/getTickFrequency() << endl;
 
+    cout << "nm boxes" << nm_boxes.size() << endl;
     if (!nm_boxes.size() || nm_boxes.size() > 1) return false;
 //    this->out = this->img.clone();
 
@@ -127,6 +127,7 @@ bool OCRTess::detectAndRecog() {
     vector<vector<string> > words((int) detections.size());
     vector<vector<float> > confidences((int) detections.size());
 
+    cout << "detecs: " << detections.size() << endl;
     if (!detections.size() || detections.size() > 1) return false;
 
     for (int i = 0; i < (int) detections.size(); i = i + this->num) {
@@ -139,7 +140,10 @@ bool OCRTess::detectAndRecog() {
     for (int i = 0; i < (int) detections.size(); i++) {
         outputs[i].erase(remove(outputs[i].begin(), outputs[i].end(), '\n'), outputs[i].end());
 //        cout << "OCR output = \"" << outputs[i] << "\" lenght = " << outputs[i].size() << endl;
-        if (outputs[i].size() < 3) continue;
+        if (outputs[i].size() < 3) {
+            cout << "outputs min size:" << outputs[i] << endl;
+            continue;
+        }
         for (int j = 0; j < (int) boxes[i].size(); j++) {
             boxes[i][j].x += nm_boxes[i].x - 15;
             boxes[i][j].y += nm_boxes[i].y - 15;
@@ -158,6 +162,7 @@ bool OCRTess::detectAndRecog() {
     }
 
     if (!words_detection.size() || words_detection.size() > 1) return false;
+    cout << "word: " << words_detection[0] << endl;
     return (words_detection[0].compare(WORD) == 0);
 }
 

@@ -18,7 +18,7 @@
 #define TR_NM2 string("trained_classifierNM2.xml")
 #define TR_GRP string("trained_classifier_erGrouping.xml")
 
-#define WORD "soma"
+#define WORD "aen"
 
 using namespace std;
 using namespace cv;
