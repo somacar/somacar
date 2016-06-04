@@ -1,27 +1,14 @@
 #include "main.hpp"
 #include "target.hpp"
 
-string toString(Point p) {
-    stringstream ss;
-    ss << p;
-    return ss.str();
-}
-
 Target::Target() { }
 
-void Target::init(UMat u, bool color) {
+void Target::init(UMat u) {
     this->orig = u.clone();
     this->draw = u.clone();
-    if (!color) {
-        cvtColor(u.clone(), u, COLOR_RGB2GRAY);
-        //threshold(u, u, 128, 255, THRESH_BINARY | THRESH_OTSU);
-//        inRange(f, Scalar(0, 0, 0, 0), Scalar(160, 255, 30, 0), f);
-    } else {
-        cvtColor(u, u, COLOR_BGR2HSV);
-        inRange(u, LOWCOLOR, UPCOLOR, u);
-//        mask = cv2.erode(mask, None, iterations=2)
-//        mask = cv2.dilate(mask, None, iterations=2)
-    }
+    cvtColor(u.clone(), u, COLOR_RGB2GRAY);
+    //threshold(u, u, 128, 255, THRESH_BINARY | THRESH_OTSU);
+    //inRange(f, Scalar(0, 0, 0, 0), Scalar(160, 255, 30, 0), f);
     GaussianBlur(u, u, Size(7, 7), 1.5, 1.5);
     Canny(u, u, 50, 150);
     this->cvt = u;
@@ -38,29 +25,19 @@ bool Target::is_square(vector<Point> c, Rect *rect) {
     return ((contourArea(c) / (float) contourArea(hull)) > 0.9);
 }
 
-void Target::found_square() {
-    vector<vector<Point>> arr;
-    arr.push_back(this->approx);
-
-    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
-
-    Moments M = moments(this->approx);
-    Point center = Point2f((int) (M.m10 / M.m00), (int) (M.m01 / M.m00));
-    putText(this->draw, toString(center), center, FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-
-    for (int i = 0; i < this->approx.size(); i++) {
-        putText(this->draw, toString(this->approx[i]), this->approx[i], FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-    }
-
-    if (center.x < this->orig.size().width / 2) this->dir = LEFT;
-    else this->dir = RIGHT;
-}
-
 void Target::found_word(bool b) {
     if (!b) return;
+    vector<vector<Point>> arr;
+    arr.push_back(this->approx);
+    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
+    Moments M = moments(this->approx);
+    Point center = Point2f((int) (M.m10 / M.m00), (int) (M.m01 / M.m00));
+    int dir;
+    if (center.x < this->orig.size().width / 2) dir = LEFT;
+    else dir = RIGHT;
     cout << "found word !!!!!!!!!!!!!!!" << endl;
     string status;
-    switch (this->dir) {
+    switch (dir) {
         case LEFT:
             status = "Go Right !";
             break;
@@ -69,6 +46,8 @@ void Target::found_word(bool b) {
             status = "Go Left !";
             break;
     }
+    line(this->draw, Point(center.x, center.y - DRAW_CROSS), Point(center.x, center.y + DRAW_CROSS), DRAW, DRAW_THICK);
+    line(this->draw, Point(center.x - DRAW_CROSS, center.y), Point(center.x + DRAW_CROSS, center.y), DRAW, DRAW_THICK);
     putText(this->draw, status, Point(20, 30), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
     putText(this->draw, to_string(this->dist) + " cm", Point(20, 100), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
 }
@@ -85,7 +64,6 @@ bool Target::find_square(UMat *sqr) {
     for (auto const &c: contours) {
         approxPolyDP(c, this->approx, 0.01 * arcLength(c, true), true);
         if (is_square(c, &rect)) {
-            found_square();
             *sqr = this->orig(rect);
 
             vector<Point2f> corn_pt, quad_pt;

@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     UMat sqr;
     Target target;
     OCRTess tess(true, REG_MSER, GR_EX);
-    bool found = false;
+    bool found;
 
     assert(v.isOpened());
     tess.init(10);
@@ -32,11 +32,9 @@ int main(int argc, char *argv[]) {
         target.init(frame.getUMat(ACCESS_READ));
         if (target.find_square(&sqr)) {
             tess.set(sqr);
-            cout << "tess set " << endl;
             found = tess.loop();
-//            tess.show(found);
+            target.found_word(found);
         }
-        target.found_word(found);
         target.show();
         if ((char) waitKey(1) == 27) break;
     }

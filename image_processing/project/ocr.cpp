@@ -34,15 +34,12 @@ bool OCRTess::loop() {
     int i = 0;
     do {
         f = detectAndRecog();
-//        imshow("ocr" + to_string(i), this->out);
         if (f) break;
         this->img = this->img.t();
         flip(this->img, this->img, 1);
         i++;
     } while (i < 4);
 
-//    for (int j=i; j<4; j++)
-//        destroyWindow("ocr" + to_string(j));
     return f;
 }
 
@@ -100,7 +97,7 @@ bool OCRTess::detectAndRecog() {
 //    cout << "TIME_GROUPING_ALT = " << ((double)getTickCount() - t_g)*1000/getTickFrequency() << endl;
 
     if (!nm_boxes.size() || nm_boxes.size() > 1) return false;
-    this->out = this->img.clone();
+//    this->out = this->img.clone();
 
     int scale = this->downsize ? 2 : 1;
     float scale_img = (600.f / this->img.rows) / scale;
@@ -160,10 +157,8 @@ bool OCRTess::detectAndRecog() {
 }
 
 void OCRTess::show(bool b) {
-//    if (b)
-//    imshow("ocr", this->img);
+//    if (b) imshow("ocr", this->img);
 //    else destroyWindow("ocr");
-//    imshow("ocrr", this->img);
 }
 
 bool OCRTess::isRepetitive(const string &s) {

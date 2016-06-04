@@ -7,6 +7,7 @@
 
 #define DRAW Scalar(0, 0, 255)
 #define DRAW_THICK 1
+#define DRAW_CROSS 10
 
 #define MIN_RECT 25
 

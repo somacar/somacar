@@ -17,8 +17,6 @@
 #define ORIG_PIXEL 196
 #define ORIG_F (ORIG_PIXEL * ORIG_DIS / ORIG_WIDTH)
 
-#define DRAW Scalar(0, 0, 255)
-#define DRAW_THICK 1
 #define LOWCOLOR Scalar(0, 200, 0)
 #define UPCOLOR Scalar(19, 255, 255)
 
@@ -29,13 +27,11 @@ class Target {
 public:
     Target();
 
-    void init(UMat u, bool color = false);
+    void init(UMat u);
 
     bool find_square(UMat *sqr);
 
     bool is_square(vector<Point> c, Rect *rect);
-
-    void found_square();
 
     void found_word(bool b);
 
@@ -43,7 +39,7 @@ public:
 
 private:
     UMat orig, cvt, draw;
-    int dir, dist;
+    int dist;
     vector<Point> approx;
 };
 

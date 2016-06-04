@@ -98,7 +98,7 @@ private:
     void er_draw(vector<UMat> &channels, vector<vector<ERStat> > &regions, vector<Vec2i> group, UMat &segmentation);
 
     int num;
-    UMat img, out;
+    UMat img;
     bool downsize;
     int REGION, GROUP;
     vector<Ptr<OCRTesseract>> ocrs;
