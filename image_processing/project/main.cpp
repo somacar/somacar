@@ -8,35 +8,32 @@ int main(int argc, char *argv[]) {
     VideoCapture v(0);
     Mat frame;
     UMat sqr;
-    Target target, inside;
-//    OCRTess tess(true, REG_MSER, GR_EX);
+    Target target;
+    OCRTess tess;
+    int mode = TARGET_STAR;
     bool found;
 
-    assert(v.isOpened());
-//    tess.init(10);
+    wiringPiSetup();
 
-//    frame = imread("test.jpg");
-//    target.init(frame.getUMat(ACCESS_READ));
-//    if (target.find_square(&sqr)) {
-//        tess.set(sqr);
-//        found = tess.loop();
-//        tess.show(found);
-//    }
-//    target.found_word(found);
-//    target.show();
-//    waitKey(0);
+    if (mode == TARGET_TEXT) {
+        tess = OCRTess(true, REG_MSER, GR_EX);
+        tess.init(10);
+    }
+
+    assert(v.isOpened());
 
     while (true) {
         v.read(frame);
-        resize(frame, frame, Size(frame.cols/2, frame.rows/2));
+        resize(frame, frame, Size(frame.cols / 2, frame.rows / 2));
         target.init(frame.getUMat(ACCESS_READ));
         if (target.find_square(&sqr)) {
-//            inside.init(sqr);
-            found = target.is_star(sqr);
-//            found = inside.is_star(sqr);
-//            tess.set(sqr);
-//            found = tess.loop();
-//            found = true;
+            if (mode == TARGET_TEXT) {
+                tess.set(sqr);
+                found = tess.loop();
+                tess.show(found);
+            } else {
+                found = target.is_star(sqr);
+            }
             target.found(found);
         }
         target.show();

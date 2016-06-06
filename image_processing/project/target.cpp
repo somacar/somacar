@@ -58,38 +58,23 @@ void Target::found(bool b) {
     cout << "found!!!!!!!!!!!!!!!!!!" << endl;
     vector<vector<Point>> arr;
     arr.push_back(this->approx);
-    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
-}
-
-void Target::found_word(bool b) {
-    if (!b) return;
-    cout << "found word !!!!!!!!!!!!!!!" << endl;
-    vector<vector<Point>> arr;
-    arr.push_back(this->approx);
     Moments M = moments(this->approx);
     Point center = Point2f((int) (M.m10 / M.m00), (int) (M.m01 / M.m00));
-    int dir;
+    int dir = CENTER;
     if (center.x < this->orig.size().width / 2) dir = LEFT;
-    else dir = RIGHT;
-//    switch (dir) {
-//        case LEFT:
-//            cout << "left" << endl;
-//            break;
-//        case RIGHT:
-//        default:
-//            cout << "right" << endl;
-//            break;
-//    }
-//    string status;
-//    switch (dir) {
-//        case LEFT:
-//            status = "Go Right !";
-//            break;
-//        case RIGHT:
-//        default:
-//            status = "Go Left !";
-//            break;
-//    }
+    if (center.x > this->orig.size().width / 6) dir = RIGHT;
+    switch (dir) {
+        case LEFT:
+            cout << "left" << endl;
+            break;
+        case RIGHT:
+            cout << "right" << endl;
+            break;
+        default:
+            cout << "go" << endl;
+            break;
+    }
+
     drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
 //    line(this->draw, Point(center.x, center.y - DRAW_CROSS), Point(center.x, center.y + DRAW_CROSS), DRAW, DRAW_THICK);
 //    line(this->draw, Point(center.x - DRAW_CROSS, center.y), Point(center.x + DRAW_CROSS, center.y), DRAW, DRAW_THICK);

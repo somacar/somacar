@@ -1,6 +1,7 @@
 #include "main.hpp"
 #include "ocr.hpp"
 
+OCRTess::OCRTess() { }
 OCRTess::OCRTess(bool downsize, int region, int group) {
     this->downsize = downsize;
     this->REGION = region;
@@ -24,7 +25,7 @@ void OCRTess::init(int num) {
 }
 
 void OCRTess::set(UMat u) {
-    if (this->downsize && u.cols > 100) resize(u, u, Size(100, 100));
+    if (this->downsize && u.cols > MIN_OCR) resize(u, u, Size(MIN_OCR, MIN_OCR));
     bitwise_not(u, this->img); // 색 반전
 }
 
