@@ -15,14 +15,14 @@ if (Tesseract_FOUND)
 else ()
     message(WARNING "Tesseract:   NO")
 endif ()
-message(WARNING ${CMAKE_MODULE_PATH})
+
 add_definitions(-lwiringPi -lwiringPiDev -lpthread -lm)
 find_package(WiringPi REQUIRED)
 find_package(Threads REQUIRED) 
 
-include_directories(${WIRINGPI_INCLUDE_DIRS}) 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${Tesseract_INCLUDE_DIR})
+include_directories(${WIRINGPI_INCLUDE_DIRS}) 
 
 add_executable(opencv project/main.cpp project/target.cpp project/ocr.cpp)
 target_link_libraries(opencv ${OpenCV_LIBS} ${Tesseract_LIBS} ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})

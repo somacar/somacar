@@ -9,8 +9,9 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-#define LEFT 0
-#define RIGHT 1
+#define CENTER 0
+#define LEFT 1
+#define RIGHT 2
 
 #define ORIG_WIDTH 14
 #define ORIG_DIS 73
@@ -33,14 +34,16 @@ public:
 
     bool is_square(vector<Point> c, Rect *rect);
 
-    void found_word(bool b);
+    bool is_star(UMat u);
+
+    void found(bool b);
 
     void show();
 
 private:
     UMat orig, cvt, draw;
     int dist;
-    vector<Point> approx;
+    vector<Point> approx, c;
 };
 
 #endif

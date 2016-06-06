@@ -69,6 +69,8 @@ $ mkdir build
 $ cd build
 $ cmake CMAKE_BUILD_TYPE=Release ..
 $ make
+$ sudo modprobe bcm2835-v4l2
+$ ./opencv
 ```
 
 ### 전체 구성

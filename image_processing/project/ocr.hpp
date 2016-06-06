@@ -18,7 +18,8 @@
 #define TR_NM2 string("trained_classifierNM2.xml")
 #define TR_GRP string("trained_classifier_erGrouping.xml")
 
-#define WORD "soma"
+#define WORD "aen"
+#define MIN_OCR 50
 
 using namespace std;
 using namespace cv;
@@ -88,6 +89,7 @@ public:
 
     void show(bool b);
 
+    OCRTess();
     OCRTess(bool downsize, int region, int group);
 
 private:
