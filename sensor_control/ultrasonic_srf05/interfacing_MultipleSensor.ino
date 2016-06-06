@@ -23,7 +23,18 @@ void loop() {
   Serial.print(Sensor1);
   Serial.print("/ Sensor 2 : ") ;
   Serial.println(Sensor2);
-  delay(100);
+  
+
+  if (Sensor1 > 20 || Sensor2 < 20 ) {
+    if (Sensor1 > 20) {
+      Serial.println("Sensor1 is 20cm exceed - (bottom detection)");
+    }
+
+    if (Sensor2 < 20) {
+      Serial.println("Sensor2 is distance < 20, short -  (Forward Detection)");
+    }
+  }
+  delay(300);
 }
 
 
