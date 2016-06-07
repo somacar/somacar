@@ -14,6 +14,4 @@
 #define TARGET_STAR 0
 #define TARGET_TEXT 1
 
-#include <wiringPi.h>
-
 #endif

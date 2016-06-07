@@ -8,14 +8,19 @@
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <wiringSerial.h>
 
-#define CENTER 0
-#define LEFT 1
-#define RIGHT 2
+#define STOP 0
+#define CENTER 1
+#define LEFT 2
+#define RIGHT 3
+
+#define SLOW 3
+#define MIN_DIST 50
 
 #define ORIG_WIDTH 14
-#define ORIG_DIS 73
-#define ORIG_PIXEL 196
+#define ORIG_DIS 30
+#define ORIG_PIXEL 192
 #define ORIG_F (ORIG_PIXEL * ORIG_DIS / ORIG_WIDTH)
 
 #define LOWCOLOR Scalar(0, 200, 0)
@@ -38,12 +43,14 @@ public:
 
     void found(bool b);
 
+    void serial();
+
     void show();
 
 private:
     UMat orig, cvt, draw;
     int dist;
-    vector<Point> approx, c;
+    vector<Point> approx;
 };
 
 #endif

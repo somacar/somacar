@@ -13,8 +13,6 @@ int main(int argc, char *argv[]) {
     int mode = TARGET_STAR;
     bool found;
 
-    wiringPiSetup();
-
     if (mode == TARGET_TEXT) {
         tess = OCRTess(true, REG_MSER, GR_EX);
         tess.init(10);
@@ -35,6 +33,7 @@ int main(int argc, char *argv[]) {
                 found = target.is_star(sqr);
             }
             target.found(found);
+	    target.serial();
         }
         target.show();
         if ((char) waitKey(1) == 27) break;
