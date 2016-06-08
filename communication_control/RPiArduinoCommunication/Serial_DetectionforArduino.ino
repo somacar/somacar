@@ -1,5 +1,14 @@
 const int ledPin = 13;
 
+int dirA1 = 2;
+int dirA2 = 3;
+
+int dirB1 = 4;
+int dirB2 = 5;
+
+int speedPin1 = 9;
+int speedPin2 = 10;
+
 void setup() {
    Serial.begin(9600);
    Serial.println("still alive inited");
@@ -14,91 +23,45 @@ void loop() {
 }
 
 void r_funclist(int number) {
+   analogWrite(speedPin1, 255);
+   analogWrite(speedPin2, 255);
+   
    switch (number) {
       case 0: // brake
-
-        digitalWrite(3, HIGH);
+        digitalWrite(dirA1, LOW);
+        digitalWrite(dirA2, LOW);
+        digitalWrite(dirB1, LOW);
+        digitalWrite(dirB2, LOW);
         
-        digitalWrite(4, LOW);
-        digitalWrite(5, LOW);
-        digitalWrite(6, LOW);
-        digitalWrite(8, LOW);
-        digitalWrite(9, LOW);
-        digitalWrite(11, LOW);
         break;
       case 1: // forward (fast)
 
-        digitalWrite(4, HIGH);
-
-        digitalWrite(3, LOW);
-        digitalWrite(5, LOW);
-        digitalWrite(6, LOW);
-        digitalWrite(8, LOW);
-        digitalWrite(9, LOW);
-        digitalWrite(11, LOW);
+        digitalWrite(dirA1, LOW);
+        digitalWrite(dirA2, LOW);
+        digitalWrite(dirB1, HIGH);
+        digitalWrite(dirB2, LOW);
+        
         break;
       case 2: // left (fast)
 
-        digitalWrite(5, HIGH);
-
-        digitalWrite(4, LOW);
-        digitalWrite(3, LOW);
-        digitalWrite(6, LOW);
-        digitalWrite(8, LOW);
-        digitalWrite(9, LOW);
-        digitalWrite(11, LOW);
+        digitalWrite(dirA1, HIGH);
+        digitalWrite(dirA2, LOW);
+        digitalWrite(dirB1, HIGH);
+        digitalWrite(dirB2, LOW);
         
         break;
       case 3: // right (fast)
-        digitalWrite(6, HIGH);
-
-        digitalWrite(4, LOW);
-        digitalWrite(5, LOW);
-        digitalWrite(3, LOW);
-        digitalWrite(8, LOW);
-        digitalWrite(9, LOW);
-        digitalWrite(11, LOW);
-        break;
-      
-      case 4: // forward (slow)
-
-        digitalWrite(9, HIGH);
-
-
-        digitalWrite(4, LOW);
-        digitalWrite(5, LOW);
-        digitalWrite(3, LOW);
-        digitalWrite(8, LOW);
-        digitalWrite(11, LOW);
-        digitalWrite(6, LOW);
-        break;
-      case 5: // left (slow)
-        digitalWrite(11, HIGH);
-        
-
-        digitalWrite(4, LOW);
-        digitalWrite(5, LOW);
-        digitalWrite(3, LOW);
-        digitalWrite(8, LOW);
-        digitalWrite(6, LOW);
-        digitalWrite(9, LOW);
-        break;
-      case 6: // right(slow)
-        digitalWrite(8, HIGH);
-
-        digitalWrite(4, LOW);
-        digitalWrite(5, LOW);
-        digitalWrite(3, LOW);
-        digitalWrite(6, LOW);
-        digitalWrite(9, LOW);
-        digitalWrite(11,LOW);
+        digitalWrite(dirA1, LOW);
+        digitalWrite(dirA2, HIGH);
+        digitalWrite(dirB1, HIGH);
+        digitalWrite(dirB2, LOW);
         
         break;
-        
+
       default:
-
         
         break;
+     
    }
 
 
