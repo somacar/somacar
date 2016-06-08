@@ -39,7 +39,7 @@ $ sudo apt-get install python2.7-dev python3-dev
 ```
 - tesseract 설치
 ```
-sudo apt-get install tesseract-ocr tesseract-ocr-dev libleptonica-dev
+$ sudo apt-get install tesseract-ocr tesseract-ocr-dev libleptonica-dev
 ```
 - OpenCV 다운로드 및 빌드
 ```
