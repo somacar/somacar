@@ -18,7 +18,8 @@
 #define TR_NM2 string("trained_classifierNM2.xml")
 #define TR_GRP string("trained_classifier_erGrouping.xml")
 
-#define WORD "soma"
+#define WORD "aen"
+#define MIN_OCR 50
 
 using namespace std;
 using namespace cv;
@@ -80,7 +81,7 @@ class OCRTess {
 public:
     void init(int num);
 
-    void set(Mat m, UMat f);
+    void set(UMat u);
 
     bool loop();
 
@@ -88,6 +89,7 @@ public:
 
     void show(bool b);
 
+    OCRTess();
     OCRTess(bool downsize, int region, int group);
 
 private:
@@ -98,8 +100,7 @@ private:
     void er_draw(vector<UMat> &channels, vector<vector<ERStat> > &regions, vector<Vec2i> group, UMat &segmentation);
 
     int num;
-    Mat m;
-    UMat img, out;
+    UMat img;
     bool downsize;
     int REGION, GROUP;
     vector<Ptr<OCRTesseract>> ocrs;

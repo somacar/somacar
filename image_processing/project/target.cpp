@@ -1,31 +1,21 @@
 #include "main.hpp"
 #include "target.hpp"
 
-string toString(Point p) {
-    stringstream ss;
-    ss << p;
-    return ss.str();
+int sp, cur_status=STOP, pre_status=STOP;
+
+Target::Target() {
+    sp = serialOpen("/dev/ttyACM0", 9600);
 }
 
-Target::Target() { }
-
-void Target::init(Mat m, bool color) {
-    UMat f;
-    this->orig = this->draw = m.getUMat(ACCESS_READ);
-    if (!color) {
-        cvtColor(m, f, COLOR_RGB2GRAY);
-        threshold(f, f, 128, 255, THRESH_BINARY | THRESH_OTSU);
-//        inRange(f, Scalar(0, 0, 0, 0), Scalar(160, 255, 30, 0), f);
-    } else {
-        assert(f.type() == CV_8UC3);
-        cvtColor(f, f, COLOR_BGR2HSV);
-        inRange(f, LOWCOLOR, UPCOLOR, f);
-//        mask = cv2.erode(mask, None, iterations=2)
-//        mask = cv2.dilate(mask, None, iterations=2)
-    }
-    GaussianBlur(f, f, Size(7, 7), 1.5, 1.5);
-    Canny(f, f, 50, 150);
-    this->cvt = f;
+void Target::init(UMat u) {
+    this->draw = u.clone();
+    cvtColor(u.clone(), u, COLOR_RGB2GRAY);
+    this->orig = u.clone();
+    //threshold(u, u, 128, 255, THRESH_BINARY | THRESH_OTSU);
+    //inRange(f, Scalar(0, 0, 0, 0), Scalar(160, 255, 30, 0), f);
+    GaussianBlur(u, u, Size(7, 7), 1.5, 1.5);
+    Canny(u, u, 50, 150);
+    this->cvt = u;
 }
 
 bool Target::is_square(vector<Point> c, Rect *rect) {
@@ -39,38 +29,70 @@ bool Target::is_square(vector<Point> c, Rect *rect) {
     return ((contourArea(c) / (float) contourArea(hull)) > 0.9);
 }
 
-void Target::found_square() {
-    vector<vector<Point>> arr;
-    arr.push_back(this->approx);
+bool Target::is_star(UMat u) {
+    double divMaxSize = 0.175, divMinSize = 0.125;
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
 
-    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
-
-    Moments M = moments(this->approx);
-    Point center = Point2f((int) (M.m10 / M.m00), (int) (M.m01 / M.m00));
-    putText(this->draw, toString(center), center, FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-
-    for (int i = 0; i < this->approx.size(); i++) {
-        putText(this->draw, toString(this->approx[i]), this->approx[i], FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
+    threshold(u, u, 100, 255, 0);
+    findContours(u, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+    for (int i=0; i < contours.size(); i++) {
+        if(sqrt(contourArea(contours[i]))/arcLength(contours[i], true ) < divMaxSize && sqrt(contourArea(contours[i]))/arcLength(contours[i], true) > divMinSize)
+            return true;
     }
-
-    if (center.x < this->orig.size().width / 2) this->dir = LEFT;
-    else this->dir = RIGHT;
+    return false;
 }
 
-void Target::found_word(bool b) {
-    if (!b) return;
-    string status;
-    switch (this->dir) {
+void Target::found(bool b) {
+    if (!b) {
+    	cur_status = STOP;
+	return;
+    }
+    vector<vector<Point>> arr;
+    arr.push_back(this->approx);
+    Moments M = moments(this->approx);
+    Point center = Point2f((int) (M.m10 / M.m00), (int) (M.m01 / M.m00));
+
+    int status = STOP;
+    if (this->dist < MIN_DIST) status += SLOW;
+    if (center.x < this->orig.size().width / 3) status += LEFT;
+    else if (center.x > this->orig.size().width / 3 * 2) status += RIGHT;
+    else status += CENTER;
+    cur_status = status;
+
+    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
+    //putText(this->draw, status, Point(20, 30), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
+}
+
+void Target::serial() {
+    if (pre_status == cur_status) return;
+    
+    cout << "at " << to_string(this->dist) << "cm(" << to_string(cur_status) << ") on ";
+    switch (cur_status) {
+	case CENTER:
+	    cout << "go" << endl;
+	    break;
         case LEFT:
-            status = "Go Right !";
+            cout << "left" << endl;
             break;
         case RIGHT:
-        default:
-            status = "Go Left !";
+            cout << "right" << endl;
             break;
+	case CENTER+SLOW:
+	    cout << "slow go" << endl;
+	    break;
+	case LEFT+SLOW:
+	    cout << "slow left" << endl;
+	    break;
+	case RIGHT+SLOW:
+	    cout << "slow right" << endl;
+	    break;
+	default:
+	    cout << "default" << endl;
+	    break;
     }
-    putText(this->draw, status, Point(20, 30), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
-    putText(this->draw, to_string(this->dist) + " cm", Point(20, 100), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
+    serialPrintf(sp, to_string(cur_status).c_str()); 
+    pre_status = cur_status;
 }
 
 void Target::show() {
@@ -85,7 +107,6 @@ bool Target::find_square(UMat *sqr) {
     for (auto const &c: contours) {
         approxPolyDP(c, this->approx, 0.01 * arcLength(c, true), true);
         if (is_square(c, &rect)) {
-            found_square();
             *sqr = this->orig(rect);
 
             vector<Point2f> corn_pt, quad_pt;
@@ -97,7 +118,7 @@ bool Target::find_square(UMat *sqr) {
             quad_pt.push_back(Point2f(rect.width, 0));
 
             UMat tr = getPerspectiveTransform(corn_pt, quad_pt).getUMat(ACCESS_READ);
-            warpPerspective(this->orig.clone(), *sqr, tr, sqr->size());
+            warpPerspective(this->orig, *sqr, tr, sqr->size());
             return true;
         }
     }

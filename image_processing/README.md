@@ -2,7 +2,7 @@
 ### 개발 환경
 - Raspberry Pi 2
 - OpenCV (3.1.0)
-- OpenCL
+- OpenCL (1.2)
 - Tesseract (3.03)
 
 ###  Raspberry pi에 OpenCV 설치
@@ -69,6 +69,8 @@ $ mkdir build
 $ cd build
 $ cmake CMAKE_BUILD_TYPE=Release ..
 $ make
+$ sudo modprobe bcm2835-v4l2
+$ ./opencv
 ```
 
 ### 전체 구성

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.2)
 project(opencv)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -15,11 +15,14 @@ if (Tesseract_FOUND)
 else ()
     message(WARNING "Tesseract:   NO")
 endif ()
-add_definitions(-DWITH_OPENGL=ON)
+
+add_definitions(-lwirighPi -lwiringPiDev)
+find_package(WiringPi REQUIRED)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${Tesseract_INCLUDE_DIR})
+include_directories(${WIRINGPI_INCLUDE_DIRS}) 
 
 add_executable(opencv project/main.cpp project/target.cpp project/ocr.cpp)
-target_link_libraries(opencv ${OpenCV_LIBS} ${Tesseract_LIBS})
+target_link_libraries(opencv ${OpenCV_LIBS} ${Tesseract_LIBS} ${WIRINGPI_LIBRARIES})
 target_compile_definitions(opencv PUBLIC DIR="${PROJECT_DIR}")

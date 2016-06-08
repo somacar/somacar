@@ -8,17 +8,21 @@
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <wiringSerial.h>
 
-#define LEFT 0
-#define RIGHT 1
+#define STOP 0
+#define CENTER 1
+#define LEFT 2
+#define RIGHT 3
+
+#define SLOW 3
+#define MIN_DIST 50
 
 #define ORIG_WIDTH 14
-#define ORIG_DIS 73
-#define ORIG_PIXEL 196
+#define ORIG_DIS 30
+#define ORIG_PIXEL 192
 #define ORIG_F (ORIG_PIXEL * ORIG_DIS / ORIG_WIDTH)
 
-#define DRAW Scalar(0, 0, 255)
-#define DRAW_THICK 1
 #define LOWCOLOR Scalar(0, 200, 0)
 #define UPCOLOR Scalar(19, 255, 255)
 
@@ -29,21 +33,23 @@ class Target {
 public:
     Target();
 
-    void init(Mat m, bool color = false);
+    void init(UMat u);
 
     bool find_square(UMat *sqr);
 
     bool is_square(vector<Point> c, Rect *rect);
 
-    void found_square();
+    bool is_star(UMat u);
 
-    void found_word(bool b);
+    void found(bool b);
+
+    void serial();
 
     void show();
 
 private:
     UMat orig, cvt, draw;
-    int dir, dist;
+    int dist;
     vector<Point> approx;
 };
 
