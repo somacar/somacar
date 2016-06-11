@@ -1,4 +1,3 @@
-#include "main.hpp"
 #include "ocr.hpp"
 
 OCRTess::OCRTess() { }
@@ -16,12 +15,10 @@ OCRTess::OCRTess(bool downsize, int region, int group) {
 }
 
 void OCRTess::init(int num) {
-//    double t_r = getTickCount();
     this->num = num;
     for (int o = 0; o < num; o++) {
         this->ocrs.push_back(OCRTesseract::create());
     }
-//    cout << "TIME_OCR_INITIALIZATION_ALT = "<< ((double)getTickCount() - t_r)*1000/getTickFrequency() << endl;
 }
 
 void OCRTess::set(UMat u) {
@@ -30,11 +27,6 @@ void OCRTess::set(UMat u) {
 }
 
 bool OCRTess::loop() {
-//    if (detectAndRecog()) return true;
-//    this->img = this->img.t();
-//    flip(this->img, this->img, 1);
-//    return false;
-
     bool f;
     int i = 0;
     do {
@@ -44,13 +36,10 @@ bool OCRTess::loop() {
         flip(this->img, this->img, 1);
         i++;
     } while (i < 4);
-
     return f;
 }
 
 bool OCRTess::detectAndRecog() {
-//    double t_d = (double)getTickCount();
-
     UMat grey = UMat::zeros(this->img.rows + 2, this->img.cols + 2, CV_8UC1);
     cvtColor(this->img.clone(), grey, COLOR_RGB2GRAY);
 
@@ -82,12 +71,8 @@ bool OCRTess::detectAndRecog() {
             break;
         }
     }
-//    cout << "TIME_REGION_DETECTION_ALT = " << ((double)getTickCount() - t_d)*1000/getTickFrequency() << endl;
 
     /*Text Recognition (OCR)*/
-
-    // Detect character groups
-//    double t_g = getTickCount();
     vector<vector<Vec2i> > nm_region_groups;
     vector<Rect> nm_boxes;
     switch (this->GROUP) {
@@ -99,26 +84,18 @@ bool OCRTess::detectAndRecog() {
             erGrouping(this->img, channels, regions, nm_region_groups, nm_boxes, ERGROUPING_ORIENTATION_ANY, DIR + TR_GRP, 0.5);
             break;
     }
-//    cout << "TIME_GROUPING_ALT = " << ((double)getTickCount() - t_g)*1000/getTickFrequency() << endl;
 
     if (!nm_boxes.size() || nm_boxes.size() > 1) return false;
-//    this->out = this->img.clone();
 
-    int scale = this->downsize ? 2 : 1;
-    float scale_img = (600.f / this->img.rows) / scale;
-    float scale_font = (2 - scale_img) / 1.4f;
     vector<string> words_detection;
     float min_confidence1 = 51.f, min_confidence2 = 60.f;
 
     vector<UMat> detections;
     for (int i = 0; i < (int) nm_boxes.size(); i++) {
 //        rectangle(this->out, nm_boxes[i].tl(), nm_boxes[i].br(), Scalar(255, 255, 0), 3);
-
         UMat group_img = UMat::zeros(this->img.rows + 2, this->img.cols + 2, CV_8UC1);
-//        UMat u = group_img.getUMat(ACCESS_READ);
         er_draw(channels, regions, nm_region_groups[i], group_img);
         group_img = group_img(nm_boxes[i]);
-//      group_img(nm_boxes[i]).copyTo(group_img);
         copyMakeBorder(group_img.clone(), group_img, 15, 15, 15, 15, BORDER_CONSTANT, Scalar(0));
         detections.push_back(group_img);
     }
@@ -138,14 +115,12 @@ bool OCRTess::detectAndRecog() {
 
     for (int i = 0; i < (int) detections.size(); i++) {
         outputs[i].erase(remove(outputs[i].begin(), outputs[i].end(), '\n'), outputs[i].end());
-//        cout << "OCR output = \"" << outputs[i] << "\" lenght = " << outputs[i].size() << endl;
         if (outputs[i].size() < 3) {
             continue;
         }
         for (int j = 0; j < (int) boxes[i].size(); j++) {
             boxes[i][j].x += nm_boxes[i].x - 15;
             boxes[i][j].y += nm_boxes[i].y - 15;
-//            cout << "  word = " << words[j] << "\t confidence = " << confidences[j] << endl;
             if ((words[i][j].size() < 2) || (confidences[i][j] < min_confidence1) ||
                 ((words[i][j].size() == 2) && (words[i][j][0] == words[i][j][1])) ||
                 ((words[i][j].size() < 4) && (confidences[i][j] < min_confidence2)) ||
@@ -164,8 +139,8 @@ bool OCRTess::detectAndRecog() {
 }
 
 void OCRTess::show(bool b) {
-//    if (b) imshow("ocr", this->img);
-//    else destroyWindow("ocr");
+    if (b) imshow("ocr", this->img);
+    else destroyWindow("ocr");
 }
 
 bool OCRTess::isRepetitive(const string &s) {
@@ -184,10 +159,7 @@ bool OCRTess::isRepetitive(const string &s) {
         if ((int) s[i] == last)
             count3++;
     }
-    if ((count > ((int) s.size() + 1) / 2) || (count2 == (int) s.size()) || (count3 > ((int) s.size() * 2) / 3)) {
-        return true;
-    }
-    return false;
+    return ((count > ((int) s.size() + 1) / 2) || (count2 == (int) s.size()) || (count3 > ((int) s.size() * 2) / 3));
 }
 
 void OCRTess::er_draw(vector<UMat> &channels, vector<vector<ERStat> > &regions, vector<Vec2i> group, UMat &segmentation) {

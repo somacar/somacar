@@ -1,7 +1,3 @@
-//
-// Created by 이영인 on 2016. 5. 5..
-//
-
 #ifndef OPENCV_TARGET_H
 #define OPENCV_TARGET_H
 
@@ -15,7 +11,6 @@
 #define LEFT 2
 #define RIGHT 3
 
-#define SLOW 3
 #define MIN_DIST 50
 
 #define ORIG_WIDTH 14
@@ -41,7 +36,7 @@ public:
 
     bool is_rect(vector<Point> c);
 
-    bool is_star(UMat u);
+    bool is_inside(UMat u);
 
     void found(bool b);
 

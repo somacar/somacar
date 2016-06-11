@@ -1,7 +1,7 @@
 #include "main.hpp"
 #include "target.hpp"
 
-int sp, cur_status=STOP, pre_status=STOP;
+int sp, cur_status = STOP, pre_status = STOP;
 
 Target::Target() {
     sp = serialOpen("/dev/ttyACM0", 9600);
@@ -41,25 +41,10 @@ bool Target::is_rect(vector<Point> c) {
     return ((contourArea(c) / (float) contourArea(hull)) > 0.9);
 }
 
-bool Target::is_star(UMat u) {
-//    double divMaxSize = 0.175, divMinSize = 0.125;
-//    vector<vector<Point> > contours;
-//    vector<Vec4i> hierarchy;
-//    cvtColor(u, u, COLOR_RGB2GRAY);
-//    threshold(u, u, 100, 255, 0);
-//    findContours(u, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-//    Scalar color = Scalar( rngee.uniform(0, 255), rngee.uniform(0,255), rngee.uniform(0,255));
-//    for (int i=0; i < contours.size(); i++) {
-//        if(sqrt(contourArea(contours[i]))/arcLength(contours[i], true ) < divMaxSize && sqrt(contourArea(contours[i]))/arcLength(contours[i], true) > divMinSize) {
-//            drawContours(this->draw, contours, i, color, 2, 8, hierarchy, 0, Point() );
-//            return true;
-//        }
-//    }
-
+bool Target::is_inside(UMat u) {
     bitwise_not(u, u);
     vector<vector<Point>> contours;
     findContours(u, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-
     for (auto const &c: contours)
         if (is_rect(c)) return true;
     return false;
@@ -67,8 +52,8 @@ bool Target::is_star(UMat u) {
 
 void Target::found(bool b) {
     if (!b) {
-    	cur_status = STOP;
-	return;
+        cur_status = STOP;
+        return;
     }
     vector<vector<Point>> arr;
     arr.push_back(this->approx);
@@ -76,44 +61,18 @@ void Target::found(bool b) {
     Point center = Point2f((int) (M.m10 / M.m00), (int) (M.m01 / M.m00));
 
     int status = STOP;
-    if (this->dist < MIN_DIST) status += SLOW;
+    if (this->dist < MIN_DIST) return;
     if (center.x < this->orig.size().width / 3) status += LEFT;
     else if (center.x > this->orig.size().width / 3 * 2) status += RIGHT;
     else status += CENTER;
     cur_status = status;
-
-    drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
+    //drawContours(this->draw, arr, -1, DRAW, DRAW_THICK);
     //putText(this->draw, status, Point(20, 30), FONT_HERSHEY_SIMPLEX, 0.5, DRAW, DRAW_THICK);
 }
 
 void Target::serial() {
     if (pre_status == cur_status) return;
-    
-    cout << "at " << to_string(this->dist) << "cm(" << to_string(cur_status) << ") on ";
-    switch (cur_status) {
-	case CENTER:
-	    cout << "go" << endl;
-	    break;
-        case LEFT:
-            cout << "left" << endl;
-            break;
-        case RIGHT:
-            cout << "right" << endl;
-            break;
-	case CENTER+SLOW:
-	    cout << "slow go" << endl;
-	    break;
-	case LEFT+SLOW:
-	    cout << "slow left" << endl;
-	    break;
-	case RIGHT+SLOW:
-	    cout << "slow right" << endl;
-	    break;
-	default:
-	    cout << "default" << endl;
-	    break;
-    }
-    serialPutchar(sp, (char)cur_status);
+    serialPutchar(sp, (char) cur_status);
     pre_status = cur_status;
 }
 
@@ -125,11 +84,10 @@ bool Target::find_square(UMat *sqr) {
     vector<vector<Point>> contours;
     Rect rect;
     findContours(this->cvt, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-
     for (auto const &c: contours) {
         approxPolyDP(c, this->approx, 0.01 * arcLength(c, true), true);
         if (is_square(c, &rect)) {
-	    if (MODE == TARGET_TEXT) *sqr = this->orig(rect);
+            if (MODE == TARGET_TEXT) *sqr = this->orig(rect);
             else *sqr = this->cvt(rect);
 
             vector<Point2f> corn_pt, quad_pt;
@@ -141,10 +99,8 @@ bool Target::find_square(UMat *sqr) {
             quad_pt.push_back(Point2f(rect.width, 0));
 
             UMat tr = getPerspectiveTransform(corn_pt, quad_pt).getUMat(ACCESS_READ);
-	    if (MODE == TARGET_TEXT)
-            	warpPerspective(this->orig.clone(), *sqr, tr, sqr->size());
-            else
-		warpPerspective(this->cvt.clone(), *sqr, tr, sqr->size());
+            if (MODE == TARGET_TEXT) warpPerspective(this->orig.clone(), *sqr, tr, sqr->size());
+            else warpPerspective(this->cvt.clone(), *sqr, tr, sqr->size());
             return true;
         }
     }

@@ -12,12 +12,16 @@ int main(int argc, char *argv[]) {
     OCRTess tess;
     bool found;
 
+
     if (MODE == TARGET_TEXT) {
         tess = OCRTess(true, REG_MSER, GR_EX);
         tess.init(10);
     }
 
-    assert(v.isOpened());
+    if (v.isOpened()) {
+        printf("ERR: camera is not opened !!\n\n");
+        return 0;
+    }
 
     while (true) {
         v.read(frame);
@@ -29,12 +33,12 @@ int main(int argc, char *argv[]) {
                 found = tess.loop();
                 tess.show(found);
             } else {
-                found = target.is_star(sqr);
+                found = target.is_inside(sqr);
             }
             target.found(found);
 	    target.serial();
         }
-        target.show();
+        //target.show();
         if ((char) waitKey(1) == 27) break;
     }
     return 0;

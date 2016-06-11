@@ -1,7 +1,3 @@
-//
-// Created by 이영인 on 2016. 5. 5..
-//
-
 #ifndef OPENCV_MAIN_H
 #define OPENCV_MAIN_H
 
