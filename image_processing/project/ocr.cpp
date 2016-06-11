@@ -52,7 +52,7 @@ bool OCRTess::detectAndRecog() {
 //    double t_d = (double)getTickCount();
 
     UMat grey = UMat::zeros(this->img.rows + 2, this->img.cols + 2, CV_8UC1);
-    cvtColor(this->img, grey, COLOR_RGB2GRAY);
+    cvtColor(this->img.clone(), grey, COLOR_RGB2GRAY);
 
     vector<UMat> channels;
     channels.clear();
@@ -101,7 +101,6 @@ bool OCRTess::detectAndRecog() {
     }
 //    cout << "TIME_GROUPING_ALT = " << ((double)getTickCount() - t_g)*1000/getTickFrequency() << endl;
 
-    cout << "nm boxes" << nm_boxes.size() << endl;
     if (!nm_boxes.size() || nm_boxes.size() > 1) return false;
 //    this->out = this->img.clone();
 
@@ -128,7 +127,6 @@ bool OCRTess::detectAndRecog() {
     vector<vector<string> > words((int) detections.size());
     vector<vector<float> > confidences((int) detections.size());
 
-    cout << "detecs: " << detections.size() << endl;
     if (!detections.size() || detections.size() > 1) return false;
 
     for (int i = 0; i < (int) detections.size(); i = i + this->num) {
@@ -142,7 +140,6 @@ bool OCRTess::detectAndRecog() {
         outputs[i].erase(remove(outputs[i].begin(), outputs[i].end(), '\n'), outputs[i].end());
 //        cout << "OCR output = \"" << outputs[i] << "\" lenght = " << outputs[i].size() << endl;
         if (outputs[i].size() < 3) {
-            cout << "outputs min size:" << outputs[i] << endl;
             continue;
         }
         for (int j = 0; j < (int) boxes[i].size(); j++) {
@@ -163,7 +160,6 @@ bool OCRTess::detectAndRecog() {
     }
 
     if (!words_detection.size() || words_detection.size() > 1) return false;
-    cout << "word: " << words_detection[0] << endl;
     return (words_detection[0].compare(WORD) == 0);
 }
 

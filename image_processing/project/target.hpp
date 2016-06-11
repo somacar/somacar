@@ -39,6 +39,8 @@ public:
 
     bool is_square(vector<Point> c, Rect *rect);
 
+    bool is_rect(vector<Point> c);
+
     bool is_star(UMat u);
 
     void found(bool b);
@@ -49,7 +51,7 @@ public:
 
 private:
     UMat orig, cvt, draw;
-    int dist;
+    int dist, out_width;
     vector<Point> approx;
 };
 

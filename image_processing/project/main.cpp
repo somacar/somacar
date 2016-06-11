@@ -10,10 +10,9 @@ int main(int argc, char *argv[]) {
     UMat sqr;
     Target target;
     OCRTess tess;
-    int mode = TARGET_STAR;
     bool found;
 
-    if (mode == TARGET_TEXT) {
+    if (MODE == TARGET_TEXT) {
         tess = OCRTess(true, REG_MSER, GR_EX);
         tess.init(10);
     }
@@ -25,7 +24,7 @@ int main(int argc, char *argv[]) {
         resize(frame, frame, Size(frame.cols / 2, frame.rows / 2));
         target.init(frame.getUMat(ACCESS_READ));
         if (target.find_square(&sqr)) {
-            if (mode == TARGET_TEXT) {
+            if (MODE == TARGET_TEXT) {
                 tess.set(sqr);
                 found = tess.loop();
                 tess.show(found);

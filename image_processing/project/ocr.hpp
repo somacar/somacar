@@ -18,8 +18,8 @@
 #define TR_NM2 string("trained_classifierNM2.xml")
 #define TR_GRP string("trained_classifier_erGrouping.xml")
 
-#define WORD "aen"
-#define MIN_OCR 50
+#define WORD "soma"
+#define MIN_OCR 55
 
 using namespace std;
 using namespace cv;
