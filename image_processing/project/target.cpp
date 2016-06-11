@@ -60,11 +60,8 @@ bool Target::is_star(UMat u) {
     vector<vector<Point>> contours;
     findContours(u, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 
-    for (auto const &c: contours) {
-        if (is_rect(c)) {
-            return true;
-        }
-    }
+    for (auto const &c: contours)
+        if (is_rect(c)) return true;
     return false;
 }
 
@@ -116,7 +113,7 @@ void Target::serial() {
 	    cout << "default" << endl;
 	    break;
     }
-    serialPrintf(sp, to_string(cur_status).c_str()); 
+    serialPutchar(sp, (char)cur_status);
     pre_status = cur_status;
 }
 
