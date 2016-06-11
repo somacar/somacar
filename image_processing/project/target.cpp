@@ -132,8 +132,8 @@ bool Target::find_square(UMat *sqr) {
     for (auto const &c: contours) {
         approxPolyDP(c, this->approx, 0.01 * arcLength(c, true), true);
         if (is_square(c, &rect)) {
-	    if (MODE == TARGET_STAR) *sqr = this->cvt(rect);
-            else *sqr = this->orig(rect);
+	    if (MODE == TARGET_TEXT) *sqr = this->orig(rect);
+            else *sqr = this->cvt(rect);
 
             vector<Point2f> corn_pt, quad_pt;
             for (int i = 0; i < this->approx.size(); i++)
@@ -144,7 +144,7 @@ bool Target::find_square(UMat *sqr) {
             quad_pt.push_back(Point2f(rect.width, 0));
 
             UMat tr = getPerspectiveTransform(corn_pt, quad_pt).getUMat(ACCESS_READ);
-	    if (MODE == TARGET_STAR)
+	    if (MODE == TARGET_TEXT)
             	warpPerspective(this->orig.clone(), *sqr, tr, sqr->size());
             else
 		warpPerspective(this->cvt.clone(), *sqr, tr, sqr->size());
