@@ -1,71 +1,139 @@
-int dir1PinA = 4;
-int dir2PinA = 5;
-int dir1PinB = 6;
-int dir2PinB = 7; 
-int speedPinA = 8;
-int speedPinB = 9;
+int dir1PinB = 5;
+int dir2PinB = 4;
+int speedOutPinB = 2;
+
+
+int dir1PinA = 7;
+int dir2PinA = 6;
+int speedOutPinA = 3;
+
+int speedIntputPin = 11;
+
+int frontPin = 12;
+int rearPin = 13;
+
+int commuPinFront = 19;
+int commuPinRear = 18;
+int commuPinRight = 17;
+int commuPinLeft = 16;
+
+int isCommu = 14;
+
 int speed1;
-int dir;
-String inputString = "";
+int speed2;
+
+int val;
 
 void setup() {
-  Serial.begin(9600);
-  
-  pinMode(dir1PinA, OUTPUT);
-  pinMode(dir2PinA, OUTPUT);
-  pinMode(speedPinA, OUTPUT);
+    Serial.begin(9600);
+    Serial.println("Start");
 
-  pinMode(dir1PinB, OUTPUT);
-  pinMode(dir2PinB, OUTPUT);
-  pinMode(speedPinB, OUTPUT);
-  
-  speed1 = 200;
-  dir = 0;
+    pinMode(commuPinFront, INPUT);
+    pinMode(commuPinRear, INPUT);
+    pinMode(commuPinRight, INPUT);
+    pinMode(commuPinLeft, INPUT);
+    
+    pinMode(isCommu, INPUT);
+    
+    //
+    pinMode(dir1PinB, OUTPUT);
+    pinMode(dir2PinB, OUTPUT);
+    pinMode(speedOutPinB, OUTPUT);
+
+    pinMode(dir1PinA, OUTPUT);
+    pinMode(dir2PinA, OUTPUT);
+    pinMode(speedOutPinA, OUTPUT);
+
+    pinMode(speedIntputPin, INPUT);
+    
+    pinMode(frontPin, INPUT);
+    pinMode(rearPin, INPUT);
+    
+    digitalWrite(dir1PinB, LOW);
+    digitalWrite(dir2PinB, LOW);
+
+    speed1 = 255;
+    speed2 = 255;
 }
 
 void loop() {
-  analogWrite(speedPinA, speed1);
-  analogWrite(speedPinB, speed1);
-  if(dir == 1) {
-    digitalWrite(dir1PinA, LOW);
-    digitalWrite(dir2PinA, HIGH);
-    digitalWrite(dir1PinB, LOW);
-    digitalWrite(dir2PinB, HIGH);    
-  } else if(dir == 2) {
-    digitalWrite(dir1PinA, HIGH);
-    digitalWrite(dir2PinA, LOW);
-    digitalWrite(dir1PinB, HIGH);
-    digitalWrite(dir2PinB, LOW);
-  } else if(dir == 0) {
-    digitalWrite(dir1PinA, LOW);
-    digitalWrite(dir2PinA, LOW);
-    digitalWrite(dir1PinB, LOW);
-    digitalWrite(dir2PinB, LOW);
+  analogWrite(speedOutPinA, 255);
+
+  if(digitalRead(8) == LOW) {
+
+  if(digitalRead(isCommu) == HIGH) {
+      Serial.println("remote");
+      analogWrite(speedOutPinB, 255);
+      
+    if(digitalRead(commuPinFront) == HIGH) {
+        frontDir();
+      } else if(digitalRead(commuPinRear) == HIGH) {
+        rearDir();
+      } else {
+        stopDirRear();
+      }
+      
+      if(digitalRead(commuPinRight) == HIGH) {
+        rightDir();
+      } else if(digitalRead(commuPinLeft) == HIGH) {
+        leftDir();
+      } else {
+        stopDirFront();
+      }
+      
+  } else {
+    Serial.println("not remote");
+    if(digitalRead(speedIntputPin) == HIGH) {
+      analogWrite(speedOutPinB, 175);
+    } else {
+      analogWrite(speedOutPinB, 255);
+    }
+    
+    if(digitalRead(frontPin) == digitalRead(rearPin)) {
+      stopDirRear();
+    } else if(digitalRead(frontPin) == HIGH) {
+      Serial.println("front");
+      frontDir();
+    } else if(digitalRead(rearPin) == HIGH) {
+      rearDir();
+    } else {
+      stopDirRear();
+    }
+    
   }
+  } else {
+      stopDirRear();    
+  }
+  
 }
 
-void serialEvent() {
-  while(Serial.available()) {
-    char inChar = (char) Serial.read();
-    if(inChar == '\n' || inChar == '\r') {
-      
-      if(inputString.equals("front")) {
-          dir = 1;
-          inputString = "";
-          Serial.println("Front");
-      } else if (inputString.equals("rear")) {
-          dir = 2;
-          inputString = "";
-          Serial.println("Rear");
-      } else if (inputString.equals("stop")) {
-          dir = 0;
-          inputString = "";
-          Serial.println("Stop");
-      }
-      //구문끝
-    }else {
-        inputString += inChar;
-      }
-  }//end of while
+void frontDir() {
+  digitalWrite(dir1PinB, LOW);
+  digitalWrite(dir2PinB, HIGH);
+}
+
+void rearDir() {
+  digitalWrite(dir1PinB, HIGH);
+  digitalWrite(dir2PinB, LOW);
+}
+
+void stopDirRear() {
+  digitalWrite(dir1PinB, LOW);
+  digitalWrite(dir2PinB, LOW);
+}
+
+void rightDir() {
+  digitalWrite(dir1PinA, HIGH);
+  digitalWrite(dir2PinA, LOW);
+}
+
+void leftDir() {
+  digitalWrite(dir1PinA, LOW);
+  digitalWrite(dir2PinA, HIGH);
+}
+
+void stopDirFront() {
+  digitalWrite(dir1PinA, LOW);
+  digitalWrite(dir2PinA, LOW);
 }
 
