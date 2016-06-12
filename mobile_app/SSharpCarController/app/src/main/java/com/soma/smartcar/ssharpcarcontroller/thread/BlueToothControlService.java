@@ -96,6 +96,15 @@ public class BlueToothControlService {
         }
     }
 
+    public void write(byte msg) {
+        try {
+            outputStream.write(msg);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String read() {
 
 

@@ -17,7 +17,7 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public void startControl(View view) {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, ControllerActivity.class));
     }
 
     public void appFinish(View view) {

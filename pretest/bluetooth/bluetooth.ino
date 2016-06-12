@@ -1,6 +1,6 @@
 #include <SoftwareSerial.h>
 
-SoftwareSerial BT(10, 11);
+SoftwareSerial BT(3, 2);
 
 void setup() {
   pinMode(13, OUTPUT);
@@ -10,11 +10,20 @@ void setup() {
   BT.println("Hello from Arduino");
 }
 
-char a;
+byte a;
 
 void loop() {
   if(BT.available()) {
-    a = (BT.read());
+    a = BT.read();
+    BT.write(a);
+    if( a == 1 ) {
+      BT.write(a);
+    } else {
+      BT.write(0x23);
+    }
+      
+    
+    /*a = (BT.read());
     if(a == '1') {
       digitalWrite(13, HIGH);
       BT.println("LED on");
@@ -30,5 +39,6 @@ void loop() {
       BT.println("Send '2' to turn LED on");
       
     }
+    */
   }//end of BT.available()
 }//end of loop()

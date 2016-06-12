@@ -14,7 +14,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.soma.smartcar.ssharpcarcontroller.R;
@@ -22,7 +24,7 @@ import com.soma.smartcar.ssharpcarcontroller.thread.BlueToothControlService;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity
+public class ControllerActivity extends AppCompatActivity
     implements View.OnClickListener, View.OnTouchListener {
 
     public static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
@@ -39,11 +41,12 @@ public class MainActivity extends AppCompatActivity
     private Button rightButton;
     private Button leftButton;
     private BlueToothControlService controlService;
+    private Switch modeSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_controller);
 
         //블루투스 미지원 단말 처리
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -64,16 +67,29 @@ public class MainActivity extends AppCompatActivity
 
         //버튼 초기화
         stopButton = (Button) findViewById(R.id.stopButton);
-        stopButton.setOnClickListener(this);
+        stopButton.setOnTouchListener(this);
         frontButton = (Button) findViewById(R.id.frontButton);
         frontButton.setOnTouchListener(this);
         rearButton = (Button) findViewById(R.id.rearButton);
-        rearButton.setOnClickListener(this);
+        rearButton.setOnTouchListener(this);
         rightButton = (Button) findViewById(R.id.rightButton);
-        rightButton.setOnClickListener(this);
+        rightButton.setOnTouchListener(this);
         leftButton = (Button) findViewById(R.id.leftButton);
-        leftButton.setOnClickListener(this);
+        leftButton.setOnTouchListener(this);
 
+        modeSwitch =  (Switch) findViewById(R.id.modeSwitch);
+        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    modeSwitch.setText("원격제어");
+                    controlService.write( (byte) 0xf1);
+                } else {
+                    modeSwitch.setText("수동제어");
+                    controlService.write( (byte) 0xf2);
+                }
+            }
+        });
     }
 
     @Override
@@ -121,16 +137,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.stopButton) {
-            messageDataList.add("비상 정지!!!!");
-            messageListAdapter.notifyDataSetChanged();
-            return;
-        }
-
-        String msg = "버튼 누름";
-
-        messageDataList.add(msg);
-        messageListAdapter.notifyDataSetChanged();
 
     }//end of onClick
 
@@ -138,6 +144,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
         switch (view.getId()) {
+            case R.id.stopButton :
+                stopEvent();
+                break;
             case R.id.frontButton :
                 frontEvent(motionEvent);
                 break;
@@ -156,18 +165,25 @@ public class MainActivity extends AppCompatActivity
         return true;
     }// end of onTuch
 
+    private void stopEvent() {
+        messageDataList.add("비상정지");
+        messageListAdapter.notifyDataSetChanged();
+        controlService.write( (byte) 0x00);
+    }
+
     private void frontEvent(MotionEvent motionEvent) {
+
         if(MotionEvent.ACTION_DOWN == motionEvent.getAction()) {
             messageDataList.add("Front 누름");
             messageListAdapter.notifyDataSetChanged();
-            controlService.write("frontDown" + "\n");
+            controlService.write( (byte) 0x01);
             return;
         }
 
         if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
             messageDataList.add("Front 정지");
             messageListAdapter.notifyDataSetChanged();
-            controlService.write("frontUp" + "\n");
+            controlService.write( (byte) 0x02);
             return;
         }
 
@@ -177,14 +193,14 @@ public class MainActivity extends AppCompatActivity
         if(MotionEvent.ACTION_DOWN == motionEvent.getAction()) {
             messageDataList.add("Rear 누름");
             messageListAdapter.notifyDataSetChanged();
-            controlService.write("rearDown" + "\n");
+            controlService.write( (byte) 0x11);
             return;
         }
 
         if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
             messageDataList.add("Rear 정지");
             messageListAdapter.notifyDataSetChanged();
-            controlService.write("rearUp" + "\n");
+            controlService.write( (byte) 0x12);
             return;
         }
     }
@@ -193,14 +209,14 @@ public class MainActivity extends AppCompatActivity
         if(MotionEvent.ACTION_DOWN == motionEvent.getAction()) {
             messageDataList.add("Right 누름");
             messageListAdapter.notifyDataSetChanged();
-            controlService.write("rightDown" + "\n");
+            controlService.write( (byte) 0x21);
             return;
         }
 
         if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
             messageDataList.add("Right 정지");
             messageListAdapter.notifyDataSetChanged();
-            controlService.write("rightUp" + "\n");
+            controlService.write( (byte) 0x22);
             return;
         }
     }
@@ -209,14 +225,14 @@ public class MainActivity extends AppCompatActivity
         if(MotionEvent.ACTION_DOWN == motionEvent.getAction()) {
             messageDataList.add("Left 누름");
             messageListAdapter.notifyDataSetChanged();
-            controlService.write("leftDown" + "\n");
+            controlService.write( (byte) 0x31);
             return;
         }
 
         if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
             messageDataList.add("Left 정지");
             messageListAdapter.notifyDataSetChanged();
-            controlService.write("leftUp" + "\n");
+            controlService.write( (byte) 0x32);
             return;
         }
     }
