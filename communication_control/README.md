@@ -10,6 +10,7 @@
 > 아두이노에서 라즈베리파이로 부터 시리얼 통신을 통해 받은 값을 아두이노에서 인식하는 코드 입니다.
 ##### 해당 폴더
 - CommunicationSerialRecv
+- RPiArduinoCommunication
 
 ## Raspberry Pi, Arduino Wi-Fi AP Switch 
 [해당 문서로 이동](https://github.com/somacar/somacar/tree/rainc/communication_control/arduino-raspberry-wifi-connect)
