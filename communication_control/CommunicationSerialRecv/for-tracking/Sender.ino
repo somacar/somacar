@@ -1,11 +1,13 @@
-
+// Set Motor pin
 int stopPin = 4;
 int goPin = 5;
 int rightPin = 6;
 int leftPin = 7;
  
-const int ReceivePin = 8;
+const int ReceivePin = 8;  // Set CameraSet Pin
+
 int state = 0;
+
 int ReceiveCount = 0; 
 int LowReceiveCount = 0;
 
@@ -20,6 +22,7 @@ void setup() {
 
    pinMode(ReceivePin, INPUT);
    pinMode(13, OUTPUT);
+   // Set Pinmode
    
 }
 
@@ -27,10 +30,8 @@ void loop() {
   
   // Serial Receiver (ttyACM0) for RPi (From tracking Process)
   if (Serial.available()) {
-     unsigned char myChar = Serial.read();
-     
-//     num[0] = Serial.read() - '0' ; 
-     r_funclist(int(myChar));
+     unsigned char myChar = Serial.read(); // SerialRead with unsigned char
+     r_funclist(int(myChar)); // assign to function
   }
   
   state = digitalRead(ReceivePin); // Check Arduino Pin 8 for switch Tracking Mode / Manual Mode
@@ -57,7 +58,7 @@ void loop() {
     }
     delay(100);
   }
-
+// This is test code 
 //  digitalWrite(stopPin, LOW);
 //  digitalWrite(goPin, HIGH);
 //  digitalWrite(rightPin, LOW);
@@ -89,8 +90,6 @@ void r_funclist(int number) {
         digitalWrite(leftPin, LOW);
         digitalWrite(rightPin, LOW);
         digitalWrite(13, LOW);
-//        delay(1000);
-//        digitalWrite(13, HIGH);
         Serial.println("brake");
         break;
         
@@ -100,8 +99,6 @@ void r_funclist(int number) {
         digitalWrite(leftPin, LOW);
         digitalWrite(rightPin, LOW); 
         digitalWrite(13, LOW);
-//        delay(1000);
-//        digitalWrite(13, HIGH);
         Serial.println("forward");
         break;
         
@@ -111,8 +108,7 @@ void r_funclist(int number) {
         digitalWrite(stopPin, LOW);
         digitalWrite(rightPin, LOW);
         digitalWrite(13, LOW);
-//        delay(1000);
-//        digitalWrite(13, HIGH);
+
         Serial.println("left");
         break;
         
@@ -122,8 +118,6 @@ void r_funclist(int number) {
         digitalWrite(stopPin, LOW);
         digitalWrite(leftPin, LOW);
         digitalWrite(13, LOW);
-//        delay(1000);
-//        digitalWrite(13, HIGH);
         Serial.println("right");
         break;
         
