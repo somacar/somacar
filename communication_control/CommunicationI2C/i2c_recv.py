@@ -11,8 +11,11 @@ def writeNumber(value):
 
 
 def readNumber():
-        number = bus.read_byte(address)
-        return number
+	try:
+		number = bus.read_byte(address)
+		return number
+	except IOError:
+		print("IOError")
 
 while True:
         #var = input("Enter 1-9 : ")
@@ -21,8 +24,11 @@ while True:
 
         #writeNumber(var)
         #print("RPI : Hi adrduino , i sent you ", var)
-        #time.sleep(1)
+        time.sleep(1)
 
         number = readNumber()
-        if not number == 0:
-                print("Arduini : Hey RPI, I Received a dight" , number)
+	
+        print("Arduini : Hey RPI, I Received a dight" , number)
+	if not number == 0:
+		time.sleep(1)
+		print(number)
