@@ -19,6 +19,7 @@ void setup() {
    pinMode(leftPin, OUTPUT);
 
    pinMode(ReceivePin, INPUT);
+   pinMode(13, OUTPUT);
    
 }
 
@@ -26,8 +27,12 @@ void loop() {
   
   // Serial Receiver (ttyACM0) for RPi (From tracking Process)
   if (Serial.available()) {
-      r_funclist(Serial.read() - '0');
+     unsigned char myChar = Serial.read();
+     
+//     num[0] = Serial.read() - '0' ; 
+     r_funclist(int(myChar));
   }
+  
   state = digitalRead(ReceivePin); // Check Arduino Pin 8 for switch Tracking Mode / Manual Mode
   
   if (state == HIGH) { // If Camera is enabled
@@ -82,7 +87,10 @@ void r_funclist(int number) {
         digitalWrite(stopPin, HIGH);  
         digitalWrite(goPin , LOW);
         digitalWrite(leftPin, LOW);
-        digitalWrite(rightPin, LOW);      
+        digitalWrite(rightPin, LOW);
+        digitalWrite(13, LOW);
+//        delay(1000);
+//        digitalWrite(13, HIGH);
         Serial.println("brake");
         break;
         
@@ -91,6 +99,9 @@ void r_funclist(int number) {
         digitalWrite(stopPin, LOW);
         digitalWrite(leftPin, LOW);
         digitalWrite(rightPin, LOW); 
+        digitalWrite(13, LOW);
+//        delay(1000);
+//        digitalWrite(13, HIGH);
         Serial.println("forward");
         break;
         
@@ -99,7 +110,10 @@ void r_funclist(int number) {
         digitalWrite(goPin, LOW);
         digitalWrite(stopPin, LOW);
         digitalWrite(rightPin, LOW);
-        Serial.println("forward");
+        digitalWrite(13, LOW);
+//        delay(1000);
+//        digitalWrite(13, HIGH);
+        Serial.println("left");
         break;
         
       case 3: // right (fast)
@@ -107,10 +121,15 @@ void r_funclist(int number) {
         digitalWrite(goPin, LOW);
         digitalWrite(stopPin, LOW);
         digitalWrite(leftPin, LOW);
+        digitalWrite(13, LOW);
+//        delay(1000);
+//        digitalWrite(13, HIGH);
         Serial.println("right");
         break;
         
-      default:        
+      default:
+        Serial.print("Not Detected number : ");
+        Serial.println(number);   
         break;
      
    }
