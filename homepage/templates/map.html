@@ -27,12 +27,24 @@
             new google.maps.Marker({
                 position: c,
                 map: map,
-                icon: '{% static 'custom/cur.svg' %}',
+                icon: {
+                    url: '{% static 'custom/cur.png' %}',
+                    size: new google.maps.Size(25, 25),
+                    scaledSize: new google.maps.Size(25, 25),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(12.5, 12.5)
+                },
                 title: 'title'
             });
         }
         function addMarkers() {
-            var image = '{% static 'custom/marker.svg' %}';
+            var image = {
+                url: '{% static 'custom/marker.png' %}',
+                size: new google.maps.Size(40, 50),
+                scaledSize: new google.maps.Size(40, 50),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(25, 50)
+            };
             {% for mark in loc %}
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng({{ mark.pos.latitude }}, {{ mark.pos.longitude }}),
