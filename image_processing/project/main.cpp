@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
         tess.init(10);
     }
 
-    if (v.isOpened()) {
+    if (!v.isOpened()) {
         printf("ERR: camera is not opened !!\n\n");
         return 0;
     }
