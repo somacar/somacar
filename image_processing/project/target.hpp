@@ -11,6 +11,8 @@
 #define LEFT 2
 #define RIGHT 3
 
+#define DEST_ST 6
+
 #define MIN_DIST 50
 
 #define ORIG_WIDTH 14
@@ -38,9 +40,9 @@ public:
 
     bool is_inside(UMat u);
 
-    void found(bool b);
+    int found(bool b);
 
-    void serial();
+    void serial(int r);
 
     void show();
 
