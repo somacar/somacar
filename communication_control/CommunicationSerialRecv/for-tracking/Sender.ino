@@ -4,7 +4,7 @@ int goPin = 5;
 int rightPin = 6;
 int leftPin = 7;
  
-const int ReceivePin = 8;  // Set CameraSet Pin
+// const int ReceivePin = 8;  // Set CameraSet Pin (Tracking On/Off)
 
 int state = 0;
 
@@ -33,30 +33,30 @@ void loop() {
      unsigned char myChar = Serial.read(); // SerialRead with unsigned char
      r_funclist(int(myChar)); // assign to function
   }
+  // 이 부분은 GPIO_Receiver.py 에서 처리하기 때문에 주석
+  // state = digitalRead(ReceivePin); // Check Arduino Pin 8 for switch Tracking Mode / Manual Mode
   
-  state = digitalRead(ReceivePin); // Check Arduino Pin 8 for switch Tracking Mode / Manual Mode
-  
-  if (state == HIGH) { // If Camera is enabled
-    ReceiveCount++;
-    if (ReceiveCount == 1) {
-        Serial.print(8); // Send signal to enable Tracking mode
-    }
+  // if (state == HIGH) { // If Camera is enabled
+  //   ReceiveCount++;
+  //   if (ReceiveCount == 1) {
+  //       Serial.print(8); // Send signal to enable Tracking mode
+  //   }
 
-    if (ReceiveCount > 1 && ReceiveCount > 100) {
-       ReceiveCount = 2;
-    }
-    delay(1);
+  //   if (ReceiveCount > 1 && ReceiveCount > 100) {
+  //      ReceiveCount = 2;
+  //   }
+  //   delay(1);
     
-  } else { // If Tracking was disabled
-    LowReceiveCount++;
-    if (LowReceiveCount == 1) {
-      Serial.print(9);  // Send signal to disable Tracking mode
-    }
+  // } else { // If Tracking was disabled
+  //   LowReceiveCount++;
+  //   if (LowReceiveCount == 1) {
+  //     Serial.print(9);  // Send signal to disable Tracking mode
+  //   }
 
-    if (LowReceiveCount > 1 && LowReceiveCount > 100 ) {
-      LowReceiveCount = 2;
-    }
-    delay(100);
+  //   if (LowReceiveCount > 1 && LowReceiveCount > 100 ) {
+  //     LowReceiveCount = 2;
+  //   }
+  //   delay(100);
   }
 // This is test code 
 //  digitalWrite(stopPin, LOW);
