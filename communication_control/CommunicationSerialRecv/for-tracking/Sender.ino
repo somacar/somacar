@@ -33,56 +33,12 @@ void loop() {
      unsigned char myChar = Serial.read(); // SerialRead with unsigned char
      r_funclist(int(myChar)); // assign to function
   }
-  // 이 부분은 GPIO_Receiver.py 에서 처리하기 때문에 주석
-  // state = digitalRead(ReceivePin); // Check Arduino Pin 8 for switch Tracking Mode / Manual Mode
-  
-  // if (state == HIGH) { // If Camera is enabled
-  //   ReceiveCount++;
-  //   if (ReceiveCount == 1) {
-  //       Serial.print(8); // Send signal to enable Tracking mode
-  //   }
-
-  //   if (ReceiveCount > 1 && ReceiveCount > 100) {
-  //      ReceiveCount = 2;
-  //   }
-  //   delay(1);
-    
-  // } else { // If Tracking was disabled
-  //   LowReceiveCount++;
-  //   if (LowReceiveCount == 1) {
-  //     Serial.print(9);  // Send signal to disable Tracking mode
-  //   }
-
-  //   if (LowReceiveCount > 1 && LowReceiveCount > 100 ) {
-  //     LowReceiveCount = 2;
-  //   }
-  //   delay(100);
   }
-// This is test code 
-//  digitalWrite(stopPin, LOW);
-//  digitalWrite(goPin, HIGH);
-//  digitalWrite(rightPin, LOW);
-//  digitalWrite(leftPin, LOW);
-//  delay(2000);
-//  digitalWrite(stopPin, HIGH);
-//  digitalWrite(goPin, LOW);
-//  digitalWrite(rightPin, LOW);
-//  digitalWrite(leftPin, LOW);
-//  delay(2000);
-//  digitalWrite(stopPin, LOW);
-//  digitalWrite(goPin, LOW);
-//  digitalWrite(rightPin, HIGH);
-//  digitalWrite(leftPin, LOW);
-//  delay(2000);
-//  digitalWrite(stopPin, LOW);
-//  digitalWrite(goPin, LOW);
-//  digitalWrite(rightPin, LOW);
-//  digitalWrite(leftPin, HIGH);
-//  delay(2000);  
 }
 
+// 시리얼로부터 받은 값들 넘겨 줌.
+// 값에 따라 다른 디지털 신호를 주는 식으로 하여 브레이크, 직진/왼쪽 오른쪽을 줌.
 void r_funclist(int number) {
-
    switch (number) {
       case 0: // brake
         digitalWrite(stopPin, HIGH);  
@@ -122,7 +78,7 @@ void r_funclist(int number) {
         break;
         
       default:
-        Serial.print("Not Detected number : ");
+        Serial.print("Not Detected number : "); //디버그 용도
         Serial.println(number);   
         break;
      
