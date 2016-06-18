@@ -1,6 +1,6 @@
 # 통신 제어
 
-## 아두이노 <-> RPI I2C 통신
+## 아두이노 <-> RPI I2C 통신 (deprecated)
 > 핀 연결을 통해 I2C 방식으로 통신을 할 수 있습니다.
 ##### 해당 폴더
 - CommunicationI2C
@@ -18,10 +18,10 @@
 - CommunicationSerialRecv
 - RPiArduinoCommunication
 
-## 트래킹 시 사용 되는 파일
+## 트래킹 시 사용 되는 파일 
 >
 - CommunicationSerialRecv/for-tracking/GPIO_Receiver.py - GPIO 4번 핀 값을 읽어들여 OpenCV On/Off 기능을 담당하는 파일
 - CommunicationSerialRecv/for-tracking/Sender.ino - 라즈베리파이와 아두이노와 시리얼 통신을 하여 모터 담당 아두이노 쪽으로 신호 전달
 
-## Raspberry Pi, Arduino Wi-Fi AP Switch 
+## Raspberry Pi, Arduino Wi-Fi AP Switch (deprecated)
 [해당 문서로 이동](https://github.com/somacar/somacar/tree/rainc/communication_control/arduino-raspberry-wifi-connect)
