@@ -18,5 +18,9 @@
 - CommunicationSerialRecv
 - RPiArduinoCommunication
 
+## 트래킹 시 사용 되는 파일
+- CommunicationSerialRecv/for-tracking/GPIO_Receiver.py - GPIO 4번 핀 값을 읽어들여 OpenCV On/Off 기능을 담당하는 파일
+- CommunicationSerialRecv/for-tracking/Sender.ino - 라즈베리파이와 아두이노와 시리얼 통신을 하여 모터 담당 아두이노 쪽으로 신호 전달
+
 ## Raspberry Pi, Arduino Wi-Fi AP Switch 
 [해당 문서로 이동](https://github.com/somacar/somacar/tree/rainc/communication_control/arduino-raspberry-wifi-connect)
