@@ -10,7 +10,8 @@ int main(int argc, char *argv[]) {
     UMat sqr;
     Target target;
     OCRTess tess;
-    bool found;
+    bool found = false;
+    int result = STOP;
 
 
     if (MODE == TARGET_TEXT) {
@@ -24,6 +25,7 @@ int main(int argc, char *argv[]) {
     }
 
     while (true) {
+        result = STOP;
         v.read(frame);
         resize(frame, frame, Size(frame.cols / 2, frame.rows / 2));
         target.init(frame.getUMat(ACCESS_READ));
@@ -35,10 +37,10 @@ int main(int argc, char *argv[]) {
             } else {
                 found = target.is_inside(sqr);
             }
-            target.found(found);
-	    target.serial();
+            result = target.found(found);
         }
-        //target.show();
+        target.serial(result);
+//        target.show();
         if ((char) waitKey(1) == 27) break;
     }
     return 0;
