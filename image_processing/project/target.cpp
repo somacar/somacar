@@ -52,7 +52,7 @@ bool Target::is_inside(UMat u) {
 
 void Target::found(bool b) {
     if (!b) {
-        cur_status = STOP;
+        cur_status = CENTER;
         return;
     }
     vector<vector<Point>> arr;
