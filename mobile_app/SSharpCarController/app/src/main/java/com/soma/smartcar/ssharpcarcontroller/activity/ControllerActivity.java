@@ -42,6 +42,7 @@ public class ControllerActivity extends AppCompatActivity
     private Button leftButton;
     private BlueToothControlService controlService;
     private Switch modeSwitch;
+    private Switch trackingModeSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +91,18 @@ public class ControllerActivity extends AppCompatActivity
                 }
             }
         });
+
+        trackingModeSwitch = (Switch) findViewById(R.id.trackingModeSwitch);
+        trackingModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    controlService.write( (byte) 0x51);
+                } else {
+                    controlService.write( (byte) 0x52);
+                }
+            }
+        });
     }
 
     @Override
@@ -125,13 +138,13 @@ public class ControllerActivity extends AppCompatActivity
         }
     }
 
-    int count = 0;
+    //int count = 0;
 
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            count++;
-            Toast.makeText(getApplicationContext(),count + " " + msg.getData().getString("read"), Toast.LENGTH_SHORT).show();
+            //count++;
+            //Toast.makeText(getApplicationContext(),count + " " + msg.getData().getString("read"), Toast.LENGTH_SHORT).show();
         }
     };
 

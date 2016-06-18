@@ -37,13 +37,26 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-            <ListView
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="트래킹모드"
+                android:id="@+id/trackingModeSwitch" />
+        </LinearLayout>
+
+        <ListView
                 android:layout_width="151dp"
                 android:layout_height="match_parent"
                 android:id="@+id/messageListView"
                 android:drawSelectorOnTop="false"
                 android:transcriptMode="normal"
                 android:stackFromBottom="true"/>
+
     </LinearLayout>
     <LinearLayout
         android:orientation="vertical"

@@ -59,10 +59,10 @@ void setup() {
 void loop() {
   analogWrite(speedOutPinA, 255);
 
-  if(digitalRead(8) == LOW) {
-
+  //if(digitalRead(8) == LOW) {
+  
+  Serial.println("ultra LOW");
   if(digitalRead(isCommu) == HIGH) {
-      Serial.println("remote");
       analogWrite(speedOutPinB, 255);
       
     if(digitalRead(commuPinFront) == HIGH) {
@@ -82,9 +82,8 @@ void loop() {
       }
       
   } else {
-    Serial.println("not remote");
     if(digitalRead(speedIntputPin) == HIGH) {
-      analogWrite(speedOutPinB, 175);
+      analogWrite(speedOutPinB, 140);
     } else {
       analogWrite(speedOutPinB, 255);
     }
@@ -92,7 +91,6 @@ void loop() {
     if(digitalRead(frontPin) == digitalRead(rearPin)) {
       stopDirRear();
     } else if(digitalRead(frontPin) == HIGH) {
-      Serial.println("front");
       frontDir();
     } else if(digitalRead(rearPin) == HIGH) {
       rearDir();
@@ -101,9 +99,10 @@ void loop() {
     }
     
   }
-  } else {
-      stopDirRear();    
-  }
+ // } else {
+  //    Serial.println("ultra HIGH");
+//      stopDirRear();    
+  //}
   
 }
 
