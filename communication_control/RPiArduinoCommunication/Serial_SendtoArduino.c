@@ -22,7 +22,7 @@ int main () {
 	cnt = 0;
 	while (1) {
 		printf("Serial string was sent\n");
-		serialPrintf(sp,"2"); // Send to Arduino number 2 
+		serialPutchar(sp,'2'); // Send to Arduino number 2 
 		delay(1200);
 		cnt++;
 	}
