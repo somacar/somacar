@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
                 tess.show(found);
             } else {
                 found = target.is_inside(sqr);
+//                found = target.is_star(sqr);
             }
             result = target.found(found);
         }

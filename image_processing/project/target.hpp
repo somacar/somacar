@@ -4,7 +4,7 @@
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <wiringSerial.h>
+//#include <wiringSerial.h>
 
 #define STOP 0
 #define CENTER 1
