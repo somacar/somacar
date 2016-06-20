@@ -51,11 +51,11 @@ bool Target::is_inside(UMat u) {
                  100, 30, 1, 30 // change the last two parameters
             // (min_radius & max_radius) to detect larger circles
     );
-    for( size_t i = 0; i < circles.size(); i++ )
-    {
-        Vec3i c = circles[i];
+//    for( size_t i = 0; i < circles.size(); i++ )
+//    {
+//        Vec3i c = circles[i];
 //        circle( this->draw, Point(c[0], c[1]), c[2], DRAW, DRAW_THICK, LINE_AA);
-    }
+//    }
 
     return (circles.size() == 1);
 //    bitwise_not(u, u);
@@ -84,7 +84,7 @@ int Target::found(bool b) {
 void Target::serial(int result) {
     if (result == STOP) {
         stop_count++;
-        if (stop_count > 10) {
+        if (stop_count > MAX_STOP) {
             cout << "stopped really!!!!!!!!!!!!" << endl;
             stop_count = 0;
             return;

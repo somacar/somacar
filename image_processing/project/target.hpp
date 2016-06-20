@@ -14,6 +14,7 @@
 #define DEST_ST 6
 
 #define MIN_DIST 50
+#define MAX_STOP 40
 
 #define ORIG_WIDTH 14
 #define ORIG_DIS 30
