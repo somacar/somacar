@@ -57,9 +57,9 @@ void setup() {
 }
 
 void loop() {
-  analogWrite(speedOutPinA, 255);
+  analogWrite(speedOutPinA, 175);
 
-  //if(digitalRead(8) == LOW) {
+ if(digitalRead(8) == LOW) {
   
   Serial.println("ultra LOW");
   if(digitalRead(isCommu) == HIGH) {
@@ -99,10 +99,10 @@ void loop() {
     }
     
   }
- // } else {
-  //    Serial.println("ultra HIGH");
-//      stopDirRear();    
-  //}
+  } else {
+      Serial.println("ultra HIGH");
+      stopDirRear();    
+  }
   
 }
 

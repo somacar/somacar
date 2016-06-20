@@ -1,84 +1,110 @@
 #include <SoftwareSerial.h>
 
+//bluetooth pin 설정
+//Tx ==3, Rx == 2
 SoftwareSerial BT(3, 2);
 
+//bluetooth 통신 pin 설정
 int commuPinFront = 8;
 int commuPinRear = 9;
 int commuPinRight = 10;
 int commuPinLeft = 11;
+int isCommuPin = 12;
 
+//tracking pin 설정
 int trackingPinStop = 16;
 int trackingPinFront = 17;
 int trackingPinRight = 18;
 int trackingPinLeft = 19;
-
 int trackingModePin = 14;
+
+//현재 모드 상태
+//isTacking -> HIGH -> 트래킹모드
+//isComm -> HIGH -> 원격제어모드
 boolean isTracking = false;
+boolean isComm = false;
 
-int isCommuPin = 12;
-
-int isComm;
-
+//모터제어 Pin
 int isFront;
 int isRear;
 int isRight;
 int isLeft;
 
-String inputString = "";
-
-boolean stringComplete = false;
-
-byte a;
+//통신버퍼변수
+byte bufferByte;
 
 void setup() {
+    //초기 통신 설정
     Serial.begin(9600);
     BT.begin(9600);
     BT.println("Hello from Arduino");
-    
+
+    //모터와통신핀 OUTPUT설정
     pinMode(commuPinFront, OUTPUT);
     pinMode(commuPinRear, OUTPUT);
     pinMode(commuPinRight, OUTPUT);
     pinMode(commuPinLeft, OUTPUT);
-    
-    pinMode(isCommuPin, OUTPUT);
 
+    //트래킹 통신 INPUT설정
     pinMode(trackingPinFront, INPUT);
     pinMode(trackingPinRight, INPUT);
     pinMode(trackingPinLeft, INPUT);
     pinMode(trackingPinStop, INPUT);
 
+    //모드 pin OUTPUT 설정
     pinMode(trackingModePin, OUTPUT);
-    
-    isComm = LOW;
+    pinMode(isCommuPin, OUTPUT);
 
+    //초기 모터 제어 설정
     isFront = LOW;
     isRear = LOW;
-
     isRight = LOW;
     isLeft = LOW;
 }
 
 void loop() {
-
+  //트래킹모드 일때 설정
   if(isTracking) {
     if(digitalRead(trackingPinStop) == HIGH) {
-      Serial.println("Test1");
       isFront = LOW;
       isRight = LOW;
       isLeft = LOW;
     } else {
-      Serial.println("Test2");
-      isFront = digitalRead(trackingPinFront);
-      isRight = digitalRead(trackingPinRight);
-      isLeft = digitalRead(trackingPinLeft);
+      
+      if( digitalRead(trackingPinFront) == HIGH) {
+        isFront = HIGH;
+        isRight = LOW;
+        isLeft = LOW;
+      } else if( digitalRead(trackingPinRight) == HIGH ) {
+        isFront = HIGH;
+        isRight = HIGH;
+        isLeft = LOW;
+      } else if( digitalRead(trackingPinLeft) == HIGH ) {
+        isFront = HIGH;
+        isRight = LOW;
+        isLeft = HIGH;
+      }
+      
     }
+  }// end of tracking Mode
+  
+  //받은 통신값 설정
+  if(BT.available()) {
+    bluetoothCommunicationFunc();
   }
   
-  if(BT.available()) {
-    a = (byte) BT.read();
-    BT.println(a);
+  digitalWrite(isCommuPin, isComm);
+  digitalWrite(commuPinFront, isFront);
+  digitalWrite(commuPinRear, isRear);
+  digitalWrite(commuPinRight, isRight);
+  digitalWrite(commuPinLeft, isLeft);
+}
 
-    switch(a) {
+void bluetoothCommunicationFunc() {
+  bufferByte = (byte) BT.read();
+    BT.println(bufferByte);
+
+    switch(bufferByte) {
       //stop
       case 0x00 :
         isFront = LOW;
@@ -142,14 +168,5 @@ void loop() {
         isLeft = LOW;
         break;       
     }
-
-  }
-  
-  digitalWrite(isCommuPin, isComm);
-  digitalWrite(commuPinFront, isFront);
-  digitalWrite(commuPinRear, isRear);
-  digitalWrite(commuPinRight, isRight);
-  digitalWrite(commuPinLeft, isLeft);
 }
-
 
