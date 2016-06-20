@@ -1,34 +1,26 @@
 #include <SoftwareSerial.h>
 
-SoftwareSerial BT(10, 11);
+SoftwareSerial BT(11, 10); //Tx, Rx
+int ledPin = 2;
+char inChar;
 
 void setup() {
-  pinMode(13, OUTPUT);
+  pinMode(ledPin, OUTPUT);
 
   BT.begin(9600);
-
   BT.println("Hello from Arduino");
 }
 
-char a;
-
 void loop() {
   if(BT.available()) {
-    a = (BT.read());
-    if(a == '1') {
-      digitalWrite(13, HIGH);
-      BT.println("LED on");
-    }
-
-    if(a == '2') {
-      digitalWrite(13, LOW);
-      BT.println("LED off");
-    }
-
-    if(a =='?') {
-      BT.println("Send '1' to turn LED on");
-      BT.println("Send '2' to turn LED on");
-      
+    inChar = BT.read();
+    BT.write(inChar);
+    if( inChar == '1' ) {
+      BT.write(inChar);
+      digitalWrite(ledPin, HIGH);
+    } else {
+      digitalWrite(ledPin, LOW);
+      BT.write(inChar);
     }
   }//end of BT.available()
 }//end of loop()
